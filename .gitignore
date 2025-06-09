@@ -1,0 +1,19 @@
+#ignore all object files
+*.o
+
+#ignore executables
+**/settings
+**/popject
+*.exe
+
+#ignroe .vscode folder
+.vscode/
+
+#ignore DLLS
+*.dll
+
+#ignore logs
+**/*.hornylog
+
+#ignore settings
+Settings.txt
