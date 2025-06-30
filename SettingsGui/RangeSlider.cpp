@@ -4,21 +4,32 @@
 
 	RangeSlider::RangeSlider(int X, int Y, int W, int H): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
 		knob_offset = (knob_width / w()) * max_val;
+		low_input = new Fl_Value_Input(x() - 50, y(), 50, h());
+		high_input = new Fl_Value_Input(x() + w(), y(), 50, h());
+		low_input->when(FL_WHEN_RELEASE);
+		low_input->callback(set_low_val,this);
+		high_input->callback(set_high_val,this);
 	}
 
-	void RangeSlider::XX() {
+	void RangeSlider::CalculateKnobPosition() {
 		double value_size_ratio = (w() - knob_width * 2 - 4) / (max_val - min_val);
 		lx = x() + value_size_ratio * low_val + 2;
 		hx = x() + value_size_ratio * high_val + knob_width + 2;
 	}
-
 
 	void RangeSlider::draw() {
 		// background
 		fl_draw_box(FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR);
 
 		// low and high end selector location
-		XX();
+		if (high_val > max_val) {
+			high_val = max_val;
+		}
+		if (low_val < min_val) {
+			low_val = min_val;
+		}
+
+		CalculateKnobPosition();
 
 		// selected range
 		fl_color(136);
@@ -32,9 +43,49 @@
 		fl_draw_box(FL_UP_BOX, hx, y() + lower_button_offset, knob_width, h()-4, FL_LIGHT2);
 	}
 
+	void RangeSlider::UpdateValueInputs() {
+		low_input->value(low_val);
+		high_input->value(high_val);
+	}
+
+	void RangeSlider::set_low_val(Fl_Widget* w, void* data) {
+		RangeSlider* slider = static_cast<RangeSlider*>(data);
+		if (slider->low_input->value() < slider->high_val) {
+			slider->low_val = slider->low_input->value();
+		} else {
+			slider->low_val = slider->high_val;
+			slider->low_input->value(slider->high_val);
+		}
+		slider->redraw();
+	}
+
+	void RangeSlider::set_high_val(Fl_Widget* w, void* data) {
+		RangeSlider* slider = static_cast<RangeSlider*>(data);
+		if (slider->high_input->value() > slider->low_val) {
+			slider->high_val = slider->high_input->value();
+		} else {
+			slider->high_val = slider->low_val;
+			slider->high_input->value(slider->low_val);
+		}
+		slider->redraw();
+	}
+
+	void RangeSlider::value(double min, double max) {
+		this->low_val = min;
+		this->high_val = max;
+		this->low_input->value(min);
+		this->high_input->value(max);
+		redraw();
+	}
+
+	void RangeSlider::tooltip(const char* text) {
+		this->low_input->tooltip(text);
+		this->high_input->tooltip(text);
+	}
+
 	int RangeSlider::handle(int event) {
 		int mx = Fl::event_x();
-		XX();
+		CalculateKnobPosition();
 		int lx_offset = knob_width / 2;
 	
 		double val = 0;
@@ -42,7 +93,6 @@
 			case FL_PUSH:
 				val = min_val + (mx - x()) * (max_val - min_val) / w();
 				if (abs(mx - lx) < abs(mx - hx)) {
-					std::cout << abs(mx - lx - knob_width) << std::endl;
 					dragging_low = true;
 					low_val = val;
 				} else {
@@ -51,6 +101,7 @@
 				}
 				redraw();
 				do_callback();
+				UpdateValueInputs();
 				return 1;
 			case FL_DRAG:
 				if (dragging_low || dragging_high) {
@@ -76,20 +127,13 @@
 					redraw();
 					do_callback(); // notify changes
 				}
+				UpdateValueInputs();
 				return 1;
 			case FL_RELEASE:
 				dragging_low = dragging_high = false;
 				return 1;
 		}
 		return 0;
-	}
-
-	double RangeSlider::low() const {
-		return low_val;
-	}
-
-	double RangeSlider::high() const {
-		return high_val;
 	}
 
 	void RangeSlider::set_low(double v) {
