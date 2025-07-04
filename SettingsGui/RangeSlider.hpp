@@ -22,6 +22,12 @@ class RangeSlider : public Fl_Widget {
 	bool lunder = false;
 	double stepval;
 
+	bool disabled = false;
+
+	Fl_Color box_color;
+	Fl_Color selected_range_color;
+	Fl_Color background_color;
+
 	bool value_shoving = true;
 
 	Fl_Value_Input* low_input = NULL;
@@ -49,4 +55,6 @@ class RangeSlider : public Fl_Widget {
 	void CalculateKnobPosition();
 	void UpdateValueInputs();
 	void step(double step);
+	void deactivate();
+	void activate();
 };

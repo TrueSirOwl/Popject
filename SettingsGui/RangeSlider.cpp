@@ -10,6 +10,9 @@
 		high_input->when(FL_WHEN_ENTER_KEY);
 		low_input->callback(set_low_val,this);
 		high_input->callback(set_high_val,this);
+		selected_range_color = 136;
+		box_color = FL_BACKGROUND_COLOR;
+		background_color = FL_BACKGROUND_COLOR;
 	}
 
 	void RangeSlider::CalculateKnobPosition() {
@@ -42,17 +45,36 @@
 		}
 	}
 
+	void RangeSlider::deactivate() {
+		this->low_input->deactivate();
+		this->high_input->deactivate();
+		this->disabled = true;
+		selected_range_color = fl_inactive(136);
+		box_color = fl_inactive(FL_BACKGROUND_COLOR);
+		background_color = fl_inactive(FL_BACKGROUND_COLOR);
+		redraw();
+	}
+
+	void RangeSlider::activate() {
+		this->low_input->activate();
+		this->high_input->activate();
+		this->disabled = false;
+		selected_range_color = 136;
+		box_color = FL_BACKGROUND_COLOR;
+		background_color = FL_BACKGROUND_COLOR;
+		redraw();
+	}
 
 	void RangeSlider::draw() {
 		// background
-		fl_draw_box(FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR);
+		fl_draw_box(FL_DOWN_BOX, x(), y(), w(), h(), background_color);
 
 		limit_vals();
 
 		CalculateKnobPosition();
 
 		// selected range
-		fl_color(136);
+		fl_color(selected_range_color);
 		fl_rectf(lx + knob_width, y() + lower_button_offset, hx - lx - lower_button_offset, h()-4);
 
 		//if (hx < lx + knob_width) {
@@ -60,8 +82,8 @@
 		//}
 
 		// selectors
-		fl_draw_box(FL_UP_BOX, lx, y() + lower_button_offset, knob_width, h()-4, FL_LIGHT2);
-		fl_draw_box(FL_UP_BOX, hx, y() + lower_button_offset, knob_width, h()-4, FL_LIGHT2);
+		fl_draw_box(FL_UP_BOX, lx, y() + lower_button_offset, knob_width, h()-4, box_color);
+		fl_draw_box(FL_UP_BOX, hx, y() + lower_button_offset, knob_width, h()-4, box_color);
 
 		reset_val_limiting();
 	}
@@ -119,6 +141,9 @@
 	}
 
 	int RangeSlider::handle(int event) {
+		if (disabled == true) {
+			return 0;
+		}
 		int mx = Fl::event_x();
 		limit_vals();
 		CalculateKnobPosition();
