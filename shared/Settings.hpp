@@ -23,7 +23,8 @@ enum Setting
 	Range_slider_value_shoving,
 	lowPopupFadeOutSteps,
 	highPopupFadeOutSteps,
-	PopupFadeOutTime,
+	lowPopupFadeOutTime,
+	highPopupFadeOutTime,
 	PopupOpacity,
 	LoggingStrength,
 	Overlay,
@@ -49,7 +50,8 @@ struct Settings
 	bool Range_slider_value_shoving;
 	double lowPopupFadeOutSteps;
 	double highPopupFadeOutSteps;
-	int PopupFadeOutTime;
+	double lowPopupFadeOutTime;
+	double highPopupFadeOutTime;
 	double PopupOpacity;
 	int LoggingStrenght;
 	int Overlay;

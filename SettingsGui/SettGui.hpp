@@ -79,7 +79,8 @@ public:
 	int getPopupFadeOut();
 	double gethighPopupFadeOutSteps();
 	double getlowPopupFadeOutSteps();
-	int getPopupFadeOutTime();
+	int getlowPopupFadeOutTime();
+	int gethighPopupFadeOutTime();	
 	double getPopupOpacity();
 	int getPopupOverlay();
 	int getLoggingStrength();

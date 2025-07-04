@@ -27,7 +27,8 @@ Settings *ReadSettings(const char* loc) {
 		{"PopupFadeOut", Setting::PopupFadeOut},
 		{"lowPopupFadeOutSteps", Setting::lowPopupFadeOutSteps},
 		{"highPopupFadeOutSteps", Setting::highPopupFadeOutSteps},
-		{"PopupFadeOutTime", Setting::PopupFadeOutTime},
+		{"lowPopupFadeOutTime", Setting::lowPopupFadeOutTime},
+		{"highPopupFadeOutTime", Setting::highPopupFadeOutTime},
 		{"PopupOpacity", Setting::PopupOpacity},
 		{"PopupOverlay", Setting::Overlay},
 		{"LoggingStrength", Setting::LoggingStrength},
@@ -127,8 +128,12 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->highPopupFadeOutSteps = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::PopupFadeOutTime:
-		SettingsStruct->PopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
+	case Setting::lowPopupFadeOutTime:
+		SettingsStruct->lowPopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::highPopupFadeOutTime:
+		SettingsStruct->highPopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::PopupOpacity:
@@ -176,7 +181,8 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->Range_slider_value_shoving = false;
 	sett->lowPopupFadeOutSteps = 100;
 	sett->highPopupFadeOutSteps = 1000;
-	sett->PopupFadeOutTime = 1000;
+	sett->lowPopupFadeOutTime = 1000;
+	sett->highPopupFadeOutTime = 5000;
 	sett->PopupLifespan = 10000;
 	sett->PopupOpacity = 0.50;
 	sett->TimeBetweenPopups = 10000;

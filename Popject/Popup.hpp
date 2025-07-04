@@ -52,9 +52,11 @@ private:
 	struct timeb start;
 	struct timeb middle;
 
-	double fadeout_random_val;
-	double dimin;
-	double step;
+	double fadeout_steps_random_val;
+	double fadeout_time_random_val;
+
+	double fadeout_dimin_per_step;
+	double fadeout_step;
 
 	std::random_device rd;
 	std::mt19937::result_type seed;

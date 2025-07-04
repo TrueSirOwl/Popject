@@ -8,10 +8,13 @@ Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMA
 	create_rng();
 	this->start = {};
 	this->middle = {};
-	std::uniform_real_distribution<double> fadeout_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
-	fadeout_random_val = fadeout_random_dist(rng);
-	this->dimin = this->sett.PopupOpacity / fadeout_random_val;
-	this->step = this->sett.PopupFadeOutTime / fadeout_random_val;
+	std::uniform_real_distribution<double> fadeout_steps_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
+	std::uniform_real_distribution<double> fadeout_time_random_dist(this->sett.lowPopupFadeOutTime, this->sett.highPopupFadeOutTime);
+
+	fadeout_steps_random_val = fadeout_steps_random_dist(rng);
+	fadeout_time_random_val = fadeout_time_random_dist(rng);
+	this->fadeout_dimin_per_step = this->sett.PopupOpacity / fadeout_steps_random_val;
+	this->fadeout_step = fadeout_time_random_val / fadeout_steps_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
 }
 
@@ -168,8 +171,8 @@ void Popup::GifFadeout() {
 	ftime(&middle1);
 
 	if (this->sett.PopupOpacity > 0.001) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= step) {
-			this->sett.PopupOpacity -= dimin;
+		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
+			this->sett.PopupOpacity -= fadeout_dimin_per_step;
 			renderGif();
 			middle = middle1;
 		} else {
@@ -186,8 +189,8 @@ void Popup::FadeOut() {
 	ftime(&middle1);
 
 	if (this->sett.PopupOpacity > 0.001) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= step) {
-			this->sett.PopupOpacity -= dimin;
+		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
+			this->sett.PopupOpacity -= fadeout_dimin_per_step;
 			SDL_SetTextureAlphaMod(this->imageTexture, this->sett.PopupOpacity * 255);
 			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 			middle = middle1;
