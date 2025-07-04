@@ -14,26 +14,29 @@ Settings *ReadSettings(const char* loc) {
 		{"ButtonX", Setting::ButtonX},
 		{"ButtonY", Setting::ButtonY},
 		{"ButtonText", Setting::ButtonText},
-		{"PopupLifespan", Setting::PopupLifespan},
-		{"TimeBetweenPopups", Setting::TimeBetweenPopups},
+		{"lowPopupLifespan", Setting::lowPopupLifespan},
+		{"highPopupLifespan", Setting::highPopupLifespan},
+		{"lowTimeBetweenPopups", Setting::lowTimeBetweenPopups},
+		{"highTimeBetweenPopups", Setting::highTimeBetweenPopups},
 		{"Range_slider_value_shoving", Setting::Range_slider_value_shoving},
 		{"ImageFolderPath", Setting::ImageFolderPath},
 		{"MinXButtonHeight", Setting::MinXButtonHeight},
 		{"MaxXButtonHeight", Setting::MaxXButtonHeight},
 		{"MinYButtonHeight", Setting::MinYButtonHeight},
 		{"MaxYButtonHeight", Setting::MaxYButtonHeight},
-		{"Multiplicator", Setting::Multiplicator},
-		{"BurstAmt", Setting::BurstAmt},
+		{"lowMultipop", Setting::lowMultipop},
+		{"highMultipop", Setting::highMultipop},
 		{"PopupFadeOut", Setting::PopupFadeOut},
 		{"lowPopupFadeOutSteps", Setting::lowPopupFadeOutSteps},
 		{"highPopupFadeOutSteps", Setting::highPopupFadeOutSteps},
 		{"lowPopupFadeOutTime", Setting::lowPopupFadeOutTime},
 		{"highPopupFadeOutTime", Setting::highPopupFadeOutTime},
-		{"PopupOpacity", Setting::PopupOpacity},
+		{"lowPopupOpacity", Setting::lowPopupOpacity},
+		{"highPopupOpacity", Setting::highPopupOpacity},
 		{"PopupOverlay", Setting::Overlay},
 		{"LoggingStrength", Setting::LoggingStrength},
-		{"ImageSizeMax",Setting::ImageSizeMax},
-		{"ImageSizeMin", Setting::ImageSizeMin}
+		{"highImageScale",Setting::highImageScale},
+		{"lowImageScale", Setting::lowImageScale}
 	};
 	int settingsDone = 0;
 
@@ -80,12 +83,20 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->ButtonText = line.substr(line.find('=') + 1, line.length());
 		break;
 
-	case Setting::PopupLifespan:
-		SettingsStruct->PopupLifespan = std::stoi(line.substr(line.find('=') + 1, line.length()));
+	case Setting::lowPopupLifespan:
+		SettingsStruct->lowPopupLifespan = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::TimeBetweenPopups:
-		SettingsStruct->TimeBetweenPopups = std::stod(line.substr(line.find('=') + 1, line.length()));
+	case Setting::highPopupLifespan:
+		SettingsStruct->highPopupLifespan = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::lowTimeBetweenPopups:
+		SettingsStruct->lowTimeBetweenPopups = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::highTimeBetweenPopups:
+		SettingsStruct->highTimeBetweenPopups = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::ImageFolderPath:
@@ -108,12 +119,12 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->MaxYButtonHeight = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::BurstAmt:
-		SettingsStruct->BurstAmt = std::stoi(line.substr(line.find('=') + 1, line.length()));
+	case Setting::lowMultipop:
+		SettingsStruct->lowMultipop = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::Multiplicator:
-		SettingsStruct->Multiplicator = std::stoi(line.substr(line.find('=') + 1, line.length()));
+	case Setting::highMultipop:
+		SettingsStruct->highMultipop = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::PopupFadeOut:
@@ -136,8 +147,12 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->highPopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::PopupOpacity:
-		SettingsStruct->PopupOpacity = std::stod(line.substr(line.find('=') + 1, line.length()));
+	case Setting::lowPopupOpacity:
+		SettingsStruct->lowPopupOpacity = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::highPopupOpacity:
+		SettingsStruct->highPopupOpacity = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::Overlay:
@@ -148,12 +163,12 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->LoggingStrenght = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::ImageSizeMin:
-		SettingsStruct->ImageSizeMin = std::stod(line.substr(line.find('=') + 1, line.length()));
+	case Setting::lowImageScale:
+		SettingsStruct->lowImageScale = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::ImageSizeMax:
-		SettingsStruct->ImageSizeMax = std::stod(line.substr(line.find('=') + 1, line.length()));
+	case Setting::highImageScale:
+		SettingsStruct->highImageScale = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::Range_slider_value_shoving:
@@ -165,7 +180,8 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 }
 
 void setStandardSettingsFile(Settings* sett) {
-	sett->BurstAmt = 1;
+	sett->lowMultipop = 1;
+	sett->highMultipop = 2;
 	sett->ButtonText = "test";
 	sett->ButtonX = 10;
 	sett->ButtonY = 10;
@@ -175,7 +191,6 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->MaxYButtonHeight = 100;
 	sett->MinXButtonHeight = 10;
 	sett->MinYButtonHeight = 10;
-	sett->Multiplicator = 0;
 	sett->Overlay = 1;
 	sett->PopupFadeOut = true;
 	sett->Range_slider_value_shoving = false;
@@ -183,34 +198,12 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->highPopupFadeOutSteps = 1000;
 	sett->lowPopupFadeOutTime = 1000;
 	sett->highPopupFadeOutTime = 5000;
-	sett->PopupLifespan = 10000;
-	sett->PopupOpacity = 0.50;
-	sett->TimeBetweenPopups = 10000;
-	sett->ImageSizeMin = 0.7;
-	sett->ImageSizeMax = 1;
-
-// 	std::ofstream Settings("shared/Settings.txt");
-// 	if (Settings.is_open() == false) {
-// 		std::cout << "error could not open Settings File" << std::endl;
-// 	}
-// 	Settings << "ButtonX=" << "0" << std::endl;
-// 	Settings << "ButtonY=" << "0" << std::endl;
-// 	Settings << "ButtonText=" << "0" << std::endl;
-// 	Settings << "PopupLifespan=" << "0" << std::endl;
-// 	Settings << "ImageFolderPath=" << "0" << std::endl;
-// 	Settings << "TimeBetweenPopups=" << "0" << std::endl;
-// 	Settings << "MinXButtonHeight=" << "0" << std::endl;
-// 	Settings << "MaxXButtonHeight=" << "0" << std::endl;
-// 	Settings << "MinYButtonHeight=" << "0" << std::endl;
-// 	Settings << "MaxYButtonHeight=" "0" << std::endl;
-// 	Settings << "BurstAmt=" << "0" << std::endl;
-// 	Settings << "PopupFadeOut=" << "0" << std::endl;
-// 	Settings << "PopupFadeOutSteps=" << "0" << std::endl;
-// 	Settings << "PopupFadeOutTime=" << "0" << std::endl;
-// 	Settings << "PopupOpacity=" << "0" << std::endl;
-// 	Settings << "PopupOverlay=" << "0" << std::endl;
-// 	Settings << "LoggingStrength=" << "0" << std::endl;
+	sett->lowPopupLifespan = 10000;
+	sett->highPopupLifespan = 10000;
+	sett->lowPopupOpacity = 0.20;
+	sett->highPopupOpacity = 0.50;
+	sett->lowTimeBetweenPopups = 5000;
+	sett->highTimeBetweenPopups = 10000;
+	sett->lowImageScale = 0.7;
+	sett->highImageScale = 1;
 }
-
-//		{"Multiplicator", Setting::Multiplicator},
-//		{"EnableBurst", Setting::EnableBurst},

@@ -28,7 +28,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->ButtonTextInput->tooltip("Sets the Text on the Button in the bottom right Corner");
 	//------------------------------------------------
 
-	this->Fadex = 150;
+	this->Fadex = 200;
 	this->Fadey = 10;
 	this->Fadew = 300;
 	this->Fadeh = 60;
@@ -39,14 +39,14 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->PopupFadeOut->tooltip("Enables Popup Fadeout after Lifetime runs out");
 	this->PopupFadeOut->callback(ActivateFadeout, this);
 
-	this->PopupFadeOutStepsRangeSlider = new RangeSlider(Fadex+50, Fadey+20, 220, 20, "Steps", sett);
+	this->PopupFadeOutStepsRangeSlider = new RangeSlider(Fadex, Fadey+20, 220, 20, "Steps", sett);
 	this->PopupFadeOutStepsRangeSlider->value(this->SettingsFileContent->lowPopupFadeOutSteps, this->SettingsFileContent->highPopupFadeOutSteps);
 	this->PopupFadeOutStepsRangeSlider->tooltip("Sets the amount of Steps the Fade out takes to dissapear (one step takes one time");
 	this->PopupFadeOutStepsRangeSlider->step(1);
 	this->PopupFadeOutStepsRangeSlider->maximum(5000);
 	this->PopupFadeOutStepsRangeSlider->minimum(10);
 
-	this->PopupFadeOutTimeRangeSlider = new RangeSlider(Fadex+50, Fadey+40, 220, 20, "Time", sett);
+	this->PopupFadeOutTimeRangeSlider = new RangeSlider(Fadex, Fadey+40, 220, 20, "Time", sett);
 	this->PopupFadeOutTimeRangeSlider->value(this->SettingsFileContent->lowPopupFadeOutTime,this->SettingsFileContent->highPopupFadeOutTime);
 	this->PopupFadeOutTimeRangeSlider->tooltip("Sets the time the Fade out takes");
 	this->PopupFadeOutTimeRangeSlider->step(1);
@@ -59,22 +59,18 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 		this->PopupFadeOutStepsRangeSlider->deactivate();
 	}
 	//------------------------------------------------
-	Opacityx = 150;
+	Opacityx = 200;
 	Opacityy = 90;
 	Opacityw = 0;
 	Opacityh = 0;
 
-	this->PopupOpacitySlider = new Fl_Hor_Slider(Opacityx, Opacityy,220,20,"Opacity");
-	this->PopupOpacitySlider->value(this->SettingsFileContent->PopupOpacity);
-	this->PopupOpacitySlider->align(FL_ALIGN_LEFT);
-	this->PopupOpacitySlider->maximum(1);
-	this->PopupOpacitySlider->minimum(0);
-	this->PopupOpacitySlider->step(0.01);
-	this->PopupOpacitySlider->tooltip("Sets the Opactity of the Popups");
-	this->PopupOpacitySlider->callback(SetPopupOpacityInput,this);
-	this->PopupOpacityInput = new Fl_Value_Input(Opacityx + 220, Opacityy, 50, 20);
-	this->PopupOpacityInput->value(this->SettingsFileContent->PopupOpacity);
-	this->PopupOpacityInput->callback(SetPopupOpacitySlider, this);
+	this->PopupOpacityRangeSlider = new RangeSlider(Opacityx, Opacityy,220,20,"Opacity",sett);
+	this->PopupOpacityRangeSlider->value(this->SettingsFileContent->lowPopupOpacity, this->SettingsFileContent->highPopupOpacity);
+	this->PopupOpacityRangeSlider->maximum(1);
+	this->PopupOpacityRangeSlider->minimum(0);
+	this->PopupOpacityRangeSlider->step(0.01);
+	this->PopupOpacityRangeSlider->tooltip("Sets the Opactity of the Popups");
+
 	
 	this->Overlay = new Fl_Check_Button(Opacityx, Opacityy + 20, 20, 20,"Overlay");
 	this->Overlay->value(this->SettingsFileContent->Overlay);
@@ -85,33 +81,18 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 
 	//------------------------------------------------
 
-	Lifespanx = 150;
+	Lifespanx = 2000;
 	Lifespany = 70;
 	Lifespanw = 0;
 	Lifespanh = 0;
 
-	this->PopupLifespanSlider = new Fl_Hor_Slider(Lifespanx+20, Lifespany, 200, 20);
-	this->PopupLifespanSlider->minimum(0);
-	this->PopupLifespanSlider->maximum(10000);
-	this->PopupLifespanSlider->step(1);
-	this->PopupLifespanSlider->value(this->SettingsFileContent->PopupLifespan);
-	this->PopupLifespanSlider->callback(SetInputLifespan,this);
+	this->PopupLifespanRangeSlider = new RangeSlider(Lifespanx, Lifespany, 200, 20, "Popup Lifespan",sett);
+	this->PopupLifespanRangeSlider->minimum(0);
+	this->PopupLifespanRangeSlider->maximum(10000);
+	this->PopupLifespanRangeSlider->step(1);
+	this->PopupLifespanRangeSlider->value(this->SettingsFileContent->lowPopupLifespan, this->SettingsFileContent->highPopupLifespan);
+	this->PopupLifespanRangeSlider->tooltip("Sets how long each Popup exists untill it begins to dissapear");
 
-	this->PopupLifespanInput = new Fl_Value_Input(Lifespanx+220, Lifespany, 50, 20);
-	this->PopupLifespanInput->value(this->SettingsFileContent->PopupLifespan);
-	this->PopupLifespanInput->tooltip("Sets how long each Popup exists untill it begins to dissapear");
-	this->PopupLifespanInput->callback(SetSliderLifespan, this);
-
-	this->PopupLifespan = new Fl_Check_Button(Lifespanx, Lifespany, 20, 20, "Popup Lifespan");
-	this->PopupLifespan->value(1);
-	if (this->SettingsFileContent->PopupLifespan < 0) {
-		this->PopupLifespan->value(0);
-		this->PopupLifespanInput->deactivate();
-		this->PopupLifespanSlider->deactivate();
-	}
-	this->PopupLifespan->align(FL_ALIGN_LEFT);
-	this->PopupLifespan->callback(SetPopupLifespan, this);
-	this->PopupLifespan->tooltip("Sets wether Popups have a lifespan, after which they dissapear.\n(Disabling this may cause the program to crash due to running out of memory!)");
 	//------------------------------------------------
 
 	FolderPathx = 150;
@@ -124,90 +105,41 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->ImageFolderPath->tooltip("this is the path the program will get all its images from");
 	//------------------------------------------------
 
-	TimeBetweenx = 150;
+	TimeBetweenx = 200;
 	TimeBetweeny = 150;
 	TimeBetweenw = 0;
 	TimeBetweenh = 0;
 
-	this->TimeBetweenPopupsInput = new Fl_Value_Input(TimeBetweenx+220, TimeBetweeny, 50, 20);
-	this->TimeBetweenPopupsInput->value(this->SettingsFileContent->TimeBetweenPopups);
-	this->TimeBetweenPopupsInput->tooltip("Sets the time between Popups, Min time is always image loading time");
-	this->TimeBetweenPopupsInput->callback(SetTimeBetweenPopupsSlider, this);
-
-	this->TimeBetweenPopupsSlider = new Fl_Hor_Slider(TimeBetweenx+20, TimeBetweeny, 200, 20);
-	this->TimeBetweenPopupsSlider->minimum(0);
-	this->TimeBetweenPopupsSlider->maximum(10000);
-	this->TimeBetweenPopupsSlider->step(1);
-	this->TimeBetweenPopupsSlider->value(this->SettingsFileContent->TimeBetweenPopups);
-	this->TimeBetweenPopupsSlider->tooltip("Sets the time between Popups, Min time is always image loading time");
-	this->TimeBetweenPopupsSlider->callback(SetTimeBetweenPopupsInput, this);
-
-	this->TimeBetweenPopups = new Fl_Check_Button(TimeBetweenx, TimeBetweeny, 20, 20, "TimeBetweenPopups");
-	this->TimeBetweenPopups->align(FL_ALIGN_LEFT);
-	this->TimeBetweenPopups->tooltip("Sets the time between Popups, Min time is always image loading time");
-	this->TimeBetweenPopups->callback(SetTimeBeteenPopups, this);
-	this->TimeBetweenPopups->value(1);
-	if (this->SettingsFileContent->TimeBetweenPopups < 0) {
-		this->TimeBetweenPopups->value(0);
-		this->TimeBetweenPopupsInput->deactivate();
-		this->TimeBetweenPopupsSlider->deactivate();
-	}
+	this->TimeBetweenPopupsRangeSlider = new RangeSlider(TimeBetweenx, TimeBetweeny, 200, 20, "TimeBetweenPopups", sett);
+	this->TimeBetweenPopupsRangeSlider->minimum(0);
+	this->TimeBetweenPopupsRangeSlider->maximum(10000);
+	this->TimeBetweenPopupsRangeSlider->step(1);
+	this->TimeBetweenPopupsRangeSlider->value(this->SettingsFileContent->lowTimeBetweenPopups, this->SettingsFileContent->highTimeBetweenPopups);
+	this->TimeBetweenPopupsRangeSlider->tooltip("Sets the time between Popups, Min time is always image loading time");
 	//------------------------------------------------
 
-	Burstx = 150;
-	Bursty = 130;
+	Multipopx= 200;
+	Multipopy = 130;
 
-	this->BurstAmountSlider = new Fl_Hor_Slider(Burstx, Bursty, 220, 20, "Multipop");
-	this->BurstAmountSlider->align(FL_ALIGN_LEFT);
-	this->BurstAmountSlider->value(this->SettingsFileContent->BurstAmt);
-	this->BurstAmountSlider->bounds(1, 100);
-	this->BurstAmountSlider->step(1);
-	this->BurstAmountSlider->tooltip("Sets Amount of Popups per activation");
-	this->BurstAmountSlider->callback(SetBurstAmountInput, this);
+	this->MultipopRangeSlider = new RangeSlider(Multipopx, Multipopy, 220, 20, "Multipop", sett);
+	this->MultipopRangeSlider->value(this->SettingsFileContent->lowMultipop, this->SettingsFileContent->highMultipop);
+	this->MultipopRangeSlider->minimum(1);
+	this->MultipopRangeSlider->maximum(100);
+	this->MultipopRangeSlider->step(1);
+	this->MultipopRangeSlider->tooltip("Sets Amount of Popups per activation");
 
-	this->BurstAmountInput = new Fl_Value_Input(Burstx + 220, Bursty, 50, 20 );
-	this->BurstAmountInput->value(this->SettingsFileContent->BurstAmt);
-	this->BurstAmountInput->tooltip("Sets Amount of Popups per activation");
-	this->BurstAmountInput->callback(SetBurstAmountSlider, this);
-	//------------------------------------------------
-
-	Multiplicatorx = 150;
-	Multiplicatory = 300;
-	Multiplicatorw = 0;
-	Multiplicatorh = 0;
-
-	this->MultiplicatiorInput = new Fl_Value_Input(Multiplicatorx, Multiplicatory, 50, 20, "Multiplication");
-	this->MultiplicatiorInput->value(this->SettingsFileContent->Multiplicator);
-	this->MultiplicatiorInput->tooltip("Determines how many Popus will be created when closing a Popup");
 //------------------------------------------------
-	ImageScalex = 150;
+	ImageScalex = 200;
 	ImageScaley = 400;
 	ImageScalew = 0;
 	ImageScaleh = 0;;
 
-	this->ImageScaleMaxSlider = new Fl_Hor_Slider(ImageScalex, ImageScaley,220,20,"ImageScaleMax");
-	this->ImageScaleMaxSlider->value(this->SettingsFileContent->ImageSizeMax);
-	this->ImageScaleMaxSlider->align(FL_ALIGN_LEFT);
-	this->ImageScaleMaxSlider->maximum(1);
-	this->ImageScaleMaxSlider->minimum(0);
-	this->ImageScaleMaxSlider->step(0.01);
-	this->ImageScaleMaxSlider->tooltip("Sets the Max size of the Popups in relation to actual image size, limited by screen size");
-	this->ImageScaleMaxSlider->callback(SetImageScaleMaxInput,this);
-	this->ImageScaleMaxInput = new Fl_Value_Input(ImageScalex + 220, ImageScaley, 50, 20);
-	this->ImageScaleMaxInput->value(this->SettingsFileContent->ImageSizeMax);
-	this->ImageScaleMaxInput->callback(SetImageScaleMaxSlider, this);
-
-	this->ImageScaleMinSlider = new Fl_Hor_Slider(ImageScalex, ImageScaley+20,220,20,"ImageScaleMin");
-	this->ImageScaleMinSlider->value(this->SettingsFileContent->ImageSizeMin);
-	this->ImageScaleMinSlider->align(FL_ALIGN_LEFT);
-	this->ImageScaleMinSlider->maximum(1);
-	this->ImageScaleMinSlider->minimum(0);
-	this->ImageScaleMinSlider->step(0.01);
-	this->ImageScaleMinSlider->tooltip("Sets the Min size of the Popups in relation to actual image size");
-	this->ImageScaleMinSlider->callback(SetImageScaleMinInput,this);
-	this->ImageScaleMinInput = new Fl_Value_Input(ImageScalex + 220, ImageScaley+20, 50, 20);
-	this->ImageScaleMinInput->value(this->SettingsFileContent->ImageSizeMin);
-	this->ImageScaleMinInput->callback(SetImageScaleMinSlider, this);
+	this->ImageScaleRangeSlider = new RangeSlider(ImageScalex, ImageScaley,220,20,"ImageScaleMax",sett);
+	this->ImageScaleRangeSlider->value(this->SettingsFileContent->lowImageScale, this->SettingsFileContent->highImageScale);
+	this->ImageScaleRangeSlider->maximum(1);
+	this->ImageScaleRangeSlider->minimum(0);
+	this->ImageScaleRangeSlider->step(0.01);
+	this->ImageScaleRangeSlider->tooltip("Sets the Max size of the Popups in relation to actual image size, limited by screen size");
 
 	hide();
 }
@@ -216,57 +148,9 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 void PopupSettings::ResizeButtonTextField(Fl_Widget* w, void* data) {
 	PopupSettings* Gui = static_cast<PopupSettings*>(data);
 	Gui->ButtonTextInput->resize(Gui->W - Gui->ButtonXinput->value(), Gui->H - Gui->ButtonYinput->value(), Gui->ButtonXinput->value(), Gui->ButtonYinput->value());
-	std::cout << (int)Gui->TimeBetweenPopups->value();
 	Gui->redraw();
 }
 
-void PopupSettings::SetTimeBeteenPopups(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	if ((int)Gui->TimeBetweenPopups->value() == 1) {
-		Gui->TimeBetweenPopupsInput->activate();
-		Gui->TimeBetweenPopupsSlider->activate();
-		Gui->TimeBetweenPopupsInput->value(Gui->TimeBetweenPopupsSlider->value());
-	}
-	else {
-		Gui->TimeBetweenPopupsInput->value(-1);
-		Gui->TimeBetweenPopupsInput->deactivate();
-		Gui->TimeBetweenPopupsSlider->deactivate();
-	}
-}
-
-void PopupSettings::SetPopupLifespan(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	if ((int)Gui->PopupLifespan->value() == 1) {
-		Gui->PopupLifespanInput->activate();
-		Gui->PopupLifespanSlider->activate();
-		Gui->PopupLifespanInput->value(Gui->PopupLifespanSlider->value());
-	}
-	else {
-		Gui->PopupLifespanInput->value(-1);
-		Gui->PopupLifespanInput->deactivate();
-		Gui->PopupLifespanSlider->deactivate();
-	}
-}
-
-void PopupSettings::SetTimeBetweenPopupsSlider(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->TimeBetweenPopupsSlider->value(Gui->TimeBetweenPopupsInput->value());
-}
-
-void PopupSettings::SetTimeBetweenPopupsInput(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->TimeBetweenPopupsInput->value(Gui->TimeBetweenPopupsSlider->value());
-}
-
-void PopupSettings::SetInputLifespan(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->PopupLifespanInput->value(Gui->PopupLifespanSlider->value());
-}
-
-void PopupSettings::SetSliderLifespan(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->PopupLifespanSlider->value(Gui->PopupLifespanInput->value());
-}
 
 void PopupSettings::ActivateFadeout(Fl_Widget* w, void* data) {
 	PopupSettings* Gui = static_cast<PopupSettings*>(data);
@@ -280,47 +164,6 @@ void PopupSettings::ActivateFadeout(Fl_Widget* w, void* data) {
 	}
 }
 
-void PopupSettings::SetPopupOpacitySlider(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->PopupOpacitySlider->value(Gui->PopupOpacityInput->value());
-}
-
-void PopupSettings::SetPopupOpacityInput(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->PopupOpacityInput->value(Gui->PopupOpacitySlider->value());
-}
-
-void PopupSettings::SetBurstAmountSlider(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->BurstAmountSlider->value(Gui->BurstAmountInput->value());
-}
-
-
-void PopupSettings::SetBurstAmountInput(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->BurstAmountInput->value(Gui->BurstAmountSlider->value());
-}
-
-void PopupSettings::SetImageScaleMaxInput(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->ImageScaleMaxInput->value(Gui->ImageScaleMaxSlider->value());
-}
-
-void PopupSettings::SetImageScaleMaxSlider(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->ImageScaleMaxSlider->value(Gui->ImageScaleMaxInput->value());
-}
-
-void PopupSettings::SetImageScaleMinInput(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->ImageScaleMinInput->value(Gui->ImageScaleMinSlider->value());
-}
-
-void PopupSettings::SetImageScaleMinSlider(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	Gui->ImageScaleMinSlider->value();
-}
-
 PopupSettings::~PopupSettings() {
 	delete (this->ButtonXinput);
 	delete (this->ButtonYinput);
@@ -328,21 +171,11 @@ PopupSettings::~PopupSettings() {
 	delete (this->PopupFadeOut);
 	delete (this->PopupFadeOutStepsRangeSlider);
 	delete (this->PopupFadeOutTimeRangeSlider);
-	delete (this->PopupOpacitySlider);
-	delete (this->PopupOpacityInput);
+	delete (this->PopupOpacityRangeSlider);
 	delete (this->Overlay);
-	delete (this->PopupLifespan);
-	delete (this->PopupLifespanInput);
-	delete (this->PopupLifespanSlider);
-	delete (this->TimeBetweenPopups);
-	delete (this->TimeBetweenPopupsSlider);
-	delete (this->TimeBetweenPopupsInput);
-	delete (this->MultiplicatiorInput);
+	delete (this->PopupLifespanRangeSlider);
+	delete (this->TimeBetweenPopupsRangeSlider);
 	delete (this->ImageFolderPath);
-	delete (this->BurstAmountInput);
-	delete (this->BurstAmountSlider);
-	delete (this->ImageScaleMaxInput);
-	delete (this->ImageScaleMaxSlider);
-	delete (this->ImageScaleMinInput);
-	delete (this->ImageScaleMinSlider);
+	delete (this->MultipopRangeSlider);
+	delete (this->ImageScaleRangeSlider);
 }

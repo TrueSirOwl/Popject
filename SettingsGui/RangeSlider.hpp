@@ -9,7 +9,7 @@
 
 class RangeSlider : public Fl_Widget {
 	double min_val, max_val;
-	int low_val, high_val;
+	double low_val, high_val;
 	bool dragging_low = false;
 	bool dragging_high = false;
 	int knob_width = 10;

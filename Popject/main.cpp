@@ -59,7 +59,24 @@ int main(int argc, char* argv[]) {
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-	
+	std::random_device rd;
+	std::mt19937::result_type seed;
+	std::mt19937 rng;
+
+	seed = rd() ^ (
+	(std::mt19937::result_type)
+	std::chrono::duration_cast<std::chrono::seconds>(
+		std::chrono::system_clock::now().time_since_epoch()
+		).count() +
+	(std::mt19937::result_type)
+	std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::high_resolution_clock::now().time_since_epoch()
+		).count() );
+	rng = std::mt19937(seed);
+
+	std::uniform_real_distribution<double> Time_Between_Popups_random_dist(Sett->lowTimeBetweenPopups, Sett->highTimeBetweenPopups);
+	double TimeBetweenPopups = Time_Between_Popups_random_dist(rng);
+
 	std::queue<Burster*> preps;
 
 	std::vector<Burster*> active;
@@ -77,7 +94,7 @@ int main(int argc, char* argv[]) {
 	ftime(&start);
 	while (true) {
 		SDL_RenderClear(renderer);
-		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > Sett->TimeBetweenPopups) {
+		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > TimeBetweenPopups) {
 			if (preps.front()->prep() == true) {
 				active.push_back(preps.front());
 				preps.pop();

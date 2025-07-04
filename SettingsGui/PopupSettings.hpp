@@ -33,44 +33,28 @@ public:
 	Fl_Check_Button* PopupFadeOut;
 	RangeSlider* PopupFadeOutStepsRangeSlider;
 	RangeSlider* PopupFadeOutTimeRangeSlider;
-	
-	Fl_Hor_Slider* PopupFadeOutStepsSlider;
-	Fl_Hor_Slider* PopupFadeOutTimeSlider;
-	Fl_Value_Input* PopupFadeOutStepsInput;
-	Fl_Value_Input* PopupFadeOutTimeInput;
 	//------------------------------------------------
 	int Opacityx, Opacityy, Opacityw, Opacityh;
-	Fl_Hor_Slider* PopupOpacitySlider;
-	Fl_Value_Input* PopupOpacityInput;
+	RangeSlider* PopupOpacityRangeSlider;
 	Fl_Check_Button* Overlay;
 	//------------------------------------------------
 	int Lifespanx, Lifespany, Lifespanw, Lifespanh;
 	Fl_Check_Button* PopupLifespan;
-	Fl_Value_Input* PopupLifespanInput;
-	Fl_Hor_Slider* PopupLifespanSlider;
+	RangeSlider* PopupLifespanRangeSlider;
 	//------------------------------------------------
 	int TimeBetweenx, TimeBetweeny, TimeBetweenw, TimeBetweenh;
-	Fl_Check_Button* TimeBetweenPopups;
-	Fl_Hor_Slider* TimeBetweenPopupsSlider;
-	Fl_Value_Input* TimeBetweenPopupsInput;
-	//------------------------------------------------
-	int Multiplicatorx, Multiplicatory, Multiplicatorw, Multiplicatorh;
-	Fl_Value_Input* MultiplicatiorInput;
+	RangeSlider* TimeBetweenPopupsRangeSlider;
 	//------------------------------------------------
 	int FolderPathx, FolderPathy, FolderPathw, FolderPathh;
 	Fl_Input* ImageFolderPath;
 	//------------------------------------------------
-	int Burstx, Bursty;
+	int Multipopx, Multipopy;
 
-	Fl_Hor_Slider* BurstAmountSlider;
-	Fl_Value_Input* BurstAmountInput;
+	RangeSlider* MultipopRangeSlider;
 	//------------------------------------------------
 	int ImageScalex, ImageScaley, ImageScalew, ImageScaleh;
 
-	Fl_Hor_Slider* ImageScaleMaxSlider;
-	Fl_Value_Input* ImageScaleMaxInput;
-	Fl_Hor_Slider* ImageScaleMinSlider;
-	Fl_Value_Input* ImageScaleMinInput;
+	RangeSlider* ImageScaleRangeSlider;
 	//------------------------------------------------
 
 	static void ResizeButtonTextField(Fl_Widget* w, void* data);
@@ -90,11 +74,7 @@ public:
 	static void SetBurstModeActivity(Fl_Widget* w, void* data);
 	static void SetBurstAmountSlider(Fl_Widget* w, void* data);
 	static void SetBurstAmountInput(Fl_Widget* w, void* data);
-	static void SetImageScaleMaxInput(Fl_Widget* w, void* data);
-	static void SetImageScaleMaxSlider(Fl_Widget* w, void* data);
-	static void SetImageScaleMinInput(Fl_Widget* w, void* data);
-	static void SetImageScaleMinSlider(Fl_Widget* w, void* data);
-
+	static void SetImageScaleRangeSlider(Fl_Widget* w, void* data);
 
 	PopupSettings(int x, int y, int w, int h, Settings* sett);
 	~PopupSettings();

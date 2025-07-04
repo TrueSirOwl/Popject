@@ -3,17 +3,22 @@
 #include <SDL3/SDL_thread.h>
 
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
-sett(popsett), ImageLib(src), lifetime(sett.PopupLifespan), death(false), dispbounds(displays),
+sett(popsett), ImageLib(src), death(false), dispbounds(displays),
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
 	create_rng();
 	this->start = {};
 	this->middle = {};
 	std::uniform_real_distribution<double> fadeout_steps_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
 	std::uniform_real_distribution<double> fadeout_time_random_dist(this->sett.lowPopupFadeOutTime, this->sett.highPopupFadeOutTime);
+	std::uniform_real_distribution<double> opacity_random_dist(this->sett.lowPopupOpacity, this->sett.highPopupOpacity);
+	std::uniform_real_distribution<double> lifespan_random_dist(this->sett.lowPopupLifespan, this->sett.highPopupLifespan);
 
 	fadeout_steps_random_val = fadeout_steps_random_dist(rng);
 	fadeout_time_random_val = fadeout_time_random_dist(rng);
-	this->fadeout_dimin_per_step = this->sett.PopupOpacity / fadeout_steps_random_val;
+	opacity_random_val = opacity_random_dist(rng);
+	lifetime = lifespan_random_dist(rng);
+
+	this->fadeout_dimin_per_step = opacity_random_val / fadeout_steps_random_val;
 	this->fadeout_step = fadeout_time_random_val / fadeout_steps_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
 }
@@ -56,7 +61,7 @@ void Popup::getImage()
 void Popup::scale() {
 	double sourceSize, targetSize;
 
-	std::uniform_real_distribution<double> scaleFactor(this->sett.ImageSizeMin, this->sett.ImageSizeMax);
+	std::uniform_real_distribution<double> scaleFactor(this->sett.lowImageScale, this->sett.highImageScale);
 	sourceSize = std::min<int>(dispbounds[0].w, dispbounds[0].h) / (std::max<int>(this->imageSurface->w, this->imageSurface->h));
 
 	targetSize = scaleFactor(rng);
@@ -85,7 +90,7 @@ bool Popup::Prep() {
 	}
 	scale();
 	place();
-	SDL_SetSurfaceAlphaMod(this->imageSurface, this->sett.PopupOpacity * 255);
+	SDL_SetSurfaceAlphaMod(this->imageSurface, opacity_random_val * 255);
 	if (this->imageTexture != NULL) {
 		SDL_DestroyTexture(this->imageTexture);
 		this->imageTexture = NULL;
@@ -156,11 +161,11 @@ void Popup::renderGif() {
 		}
 		this->imageTexture = SDL_CreateTextureFromSurface(this->PopupRenderer, Gif->frames[this->Current_image++]);
 		SDL_SetTextureBlendMode(this->imageTexture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(this->imageTexture, this->sett.PopupOpacity * 255);
+		SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 		this->last_image = (long long)now.time * 1000 + now.millitm;
 	} else {
-		SDL_SetTextureAlphaMod(this->imageTexture, this->sett.PopupOpacity * 255);
+		SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 	}
 }
@@ -170,9 +175,9 @@ void Popup::GifFadeout() {
 
 	ftime(&middle1);
 
-	if (this->sett.PopupOpacity > 0.001) {
+	if (opacity_random_val > 0.001) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			this->sett.PopupOpacity -= fadeout_dimin_per_step;
+			opacity_random_val -= fadeout_dimin_per_step;
 			renderGif();
 			middle = middle1;
 		} else {
@@ -188,10 +193,10 @@ void Popup::FadeOut() {
 
 	ftime(&middle1);
 
-	if (this->sett.PopupOpacity > 0.001) {
+	if (opacity_random_val > 0.001) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			this->sett.PopupOpacity -= fadeout_dimin_per_step;
-			SDL_SetTextureAlphaMod(this->imageTexture, this->sett.PopupOpacity * 255);
+			opacity_random_val -= fadeout_dimin_per_step;
+			SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
 			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 			middle = middle1;
 		} else {

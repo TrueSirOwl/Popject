@@ -10,26 +10,29 @@ enum Setting
 	ButtonX,
 	ButtonY,
 	ButtonText,
-	PopupLifespan,
-	TimeBetweenPopups,
+	lowPopupLifespan,
+	highPopupLifespan,
+	lowTimeBetweenPopups,
+	highTimeBetweenPopups,
 	ImageFolderPath,
 	MinXButtonHeight,
 	MaxXButtonHeight,
 	MinYButtonHeight,
 	MaxYButtonHeight,
-	Multiplicator,
-	BurstAmt,
+	lowMultipop,
+	highMultipop,
 	PopupFadeOut,
 	Range_slider_value_shoving,
 	lowPopupFadeOutSteps,
 	highPopupFadeOutSteps,
 	lowPopupFadeOutTime,
 	highPopupFadeOutTime,
-	PopupOpacity,
+	lowPopupOpacity,
+	highPopupOpacity,
 	LoggingStrength,
 	Overlay,
-	ImageSizeMin,
-	ImageSizeMax
+	lowImageScale,
+	highImageScale
 };
 
 
@@ -37,26 +40,29 @@ struct Settings
 {
 	int ButtonX, ButtonY;
 	std::string ButtonText;
-	int PopupLifespan;
-	double TimeBetweenPopups;
+	double lowPopupLifespan;
+	double highPopupLifespan;
+	double lowTimeBetweenPopups;
+	double highTimeBetweenPopups;
 	std::string ImageFolderPath;
 	int MinXButtonHeight;
 	int MaxXButtonHeight;
 	int MinYButtonHeight;
 	int MaxYButtonHeight;
-	int Multiplicator;
-	int BurstAmt;
+	double lowMultipop;
+	double highMultipop;
 	bool PopupFadeOut;
 	bool Range_slider_value_shoving;
 	double lowPopupFadeOutSteps;
 	double highPopupFadeOutSteps;
 	double lowPopupFadeOutTime;
 	double highPopupFadeOutTime;
-	double PopupOpacity;
+	double lowPopupOpacity;
+	double highPopupOpacity;
 	int LoggingStrenght;
 	int Overlay;
-	double ImageSizeMin;
-	double ImageSizeMax;
+	double lowImageScale;
+	double highImageScale;
 };
 
 Settings*	ReadSettings(const char* str);

@@ -110,12 +110,12 @@ const char* SettGui::getButtonText() {
 	return (this->PopSett->ButtonTextInput->value());
 }
 
-void SettGui::setPopupLifespan(int src) {
-	this->PopSett->PopupLifespanInput->value(src);
+double SettGui::getlowPopupLifespan() {
+	return (this->PopSett->PopupLifespanRangeSlider->get_low_value());
 }
 
-int SettGui::getPopupLifespan() {
-	return (this->PopSett->PopupLifespanInput->value());
+double SettGui::gethighPopupLifespan() {
+	return (this->PopSett->PopupLifespanRangeSlider->get_high_value());
 }
 
 void SettGui::setImageFolderPath(char* src) {
@@ -126,8 +126,12 @@ const char* SettGui::getImageFolderPath() {
 	return(this->PopSett->ImageFolderPath->value());
 }
 
-double SettGui::getTimeBetweenPopups() {
-	return(this->PopSett->TimeBetweenPopupsInput->value());
+double SettGui::getlowTimeBetweenPopups() {
+	return(this->PopSett->TimeBetweenPopupsRangeSlider->get_low_value());
+}
+
+double SettGui::gethighTimeBetweenPopups() {
+	return(this->PopSett->TimeBetweenPopupsRangeSlider->get_high_value());
 }
 
 void SettGui::setMinXButtonHeight(int src) {
@@ -162,16 +166,8 @@ int SettGui::getMaxYButtonHeight() {
 	return(this->AdvSett->MaxYButtonHeightInput->value());
 }
 
-int SettGui::getMultiplicatior() {
-	return(this->PopSett->MultiplicatiorInput->value());
-}
-
 int SettGui::getRange_slider_value_shoving() {
 	return(this->AdvSett->range_slider_value_shoving->value());
-}
-
-void SettGui::setMultiplicatior(int src) {
-	this->PopSett->MultiplicatiorInput->value(src);
 }
 
 int SettGui::getPopupFadeOut() {
@@ -194,8 +190,12 @@ int SettGui::gethighPopupFadeOutTime() {
 	return(this->PopSett->PopupFadeOutTimeRangeSlider->get_high_value());
 }
 
-double SettGui::getPopupOpacity() {
-	return(this->PopSett->PopupOpacitySlider->value());
+double SettGui::getlowPopupOpacity() {
+	return(this->PopSett->PopupOpacityRangeSlider->get_low_value());
+}
+
+double SettGui::gethighPopupOpacity() {
+	return(this->PopSett->PopupOpacityRangeSlider->get_high_value());
 }
 
 int SettGui::getPopupOverlay() {
@@ -206,16 +206,20 @@ int SettGui::getLoggingStrength() {
 	return(this->AdvSett->LoggingStrength->value());
 }
 
-int SettGui::getBurstAmt() {
-	return(this->PopSett->BurstAmountSlider->value());
+double SettGui::getlowMultipop() {
+	return(this->PopSett->MultipopRangeSlider->get_low_value());
 }
 
-double SettGui::getImageSizeMin() {
-	return(this->PopSett->ImageScaleMinSlider->value());
+double SettGui::gethighMultipop() {
+	return(this->PopSett->MultipopRangeSlider->get_high_value());
 }
 
-double SettGui::getImageSizeMax() {
-	return(this->PopSett->ImageScaleMaxSlider->value());
+double SettGui::gethighImageScale() {
+	return(this->PopSett->ImageScaleRangeSlider->get_low_value());
+}
+
+double SettGui::getlowImageScale() {
+	return(this->PopSett->ImageScaleRangeSlider->get_high_value());
 
 }
 
@@ -228,25 +232,28 @@ void saveAndClose(Fl_Widget* win, void* Src) {
 	Settings << "ButtonX=" << std::min(Gui->getButtonX(), Gui->getMaxXButtonHeight()) << std::endl;
 	Settings << "ButtonY=" << std::min(Gui->getButtonY(), Gui->getMaxYButtonHeight()) << std::endl;
 	Settings << "ButtonText=" << Gui->getButtonText() << std::endl;
-	Settings << "PopupLifespan=" << Gui->getPopupLifespan() << std::endl;
+	Settings << "lowPopupLifespan=" << Gui->getlowPopupLifespan() << std::endl;
+	Settings << "highPopupLifespan=" << Gui->gethighPopupLifespan() << std::endl;
 	Settings << "ImageFolderPath=" << Gui->getImageFolderPath() << std::endl;
-	Settings << "TimeBetweenPopups=" << Gui->getTimeBetweenPopups() << std::endl;
+	Settings << "lowTimeBetweenPopups=" << Gui->getlowTimeBetweenPopups() << std::endl;
+	Settings << "highTimeBetweenPopups=" << Gui->gethighTimeBetweenPopups() << std::endl;
 	Settings << "MinXButtonHeight=" << Gui->getMinXButtonHeight() << std::endl;
 	Settings << "MaxXButtonHeight=" << Gui->getMaxXButtonHeight() << std::endl;
 	Settings << "MinYButtonHeight=" << Gui->getMinYButtonHeight() << std::endl;
 	Settings << "MaxYButtonHeight=" << Gui->getMaxYButtonHeight() << std::endl;
-	Settings << "Multiplicator=" << Gui->getMultiplicatior() << std::endl;
-	Settings << "BurstAmt=" << Gui->getBurstAmt() << std::endl;
+	Settings << "lowMultipop=" << Gui->getlowMultipop() << std::endl;
+	Settings << "highMultipop=" << Gui->gethighMultipop() << std::endl;
 	Settings << "PopupFadeOut=" << Gui->getPopupFadeOut() << std::endl;
 	Settings << "lowPopupFadeOutSteps=" << Gui->getlowPopupFadeOutSteps() << std::endl;
 	Settings << "highPopupFadeOutSteps=" << Gui->gethighPopupFadeOutSteps() << std::endl;
 	Settings << "lowPopupFadeOutTime=" << Gui->getlowPopupFadeOutTime() << std::endl;
 	Settings << "highPopupFadeOutTime=" << Gui->gethighPopupFadeOutTime() << std::endl;
-	Settings << "PopupOpacity=" << Gui->getPopupOpacity() << std::endl;
+	Settings << "lowPopupOpacity=" << Gui->getlowPopupOpacity() << std::endl;
+	Settings << "highPopupOpacity=" << Gui->gethighPopupOpacity() << std::endl;
 	Settings << "PopupOverlay=" << Gui->getPopupOverlay() << std::endl;
 	Settings << "LoggingStrength=" << Gui->getLoggingStrength() << std::endl;
-	Settings << "ImageSizeMin=" << Gui->getImageSizeMin() << std::endl;
-	Settings << "ImageSizeMax=" << Gui->getImageSizeMax() << std::endl;
+	Settings << "lowImageScale=" << Gui->gethighImageScale() << std::endl;
+	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
 	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
 
 	//Settings << "" << Gui << std::endl;

@@ -52,9 +52,10 @@ private:
 	struct timeb start;
 	struct timeb middle;
 
+	double opacity_random_val;
+
 	double fadeout_steps_random_val;
 	double fadeout_time_random_val;
-
 	double fadeout_dimin_per_step;
 	double fadeout_step;
 

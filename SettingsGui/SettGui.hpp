@@ -60,11 +60,12 @@ public:
 	int getButtonY();
 	void setButtonText(char* src);
 	const char* getButtonText();
-	void setPopupLifespan(int src);
-	int getPopupLifespan();
+	double gethighPopupLifespan();
+	double getlowPopupLifespan();
 	void setImageFolderPath(char* src);
 	const char* getImageFolderPath();
-	double getTimeBetweenPopups();
+	double getlowTimeBetweenPopups();
+	double gethighTimeBetweenPopups();
 	int getMinXButtonHeight();
 	void setMinXButtonHeight(int src);
 	int getMaxXButtonHeight();
@@ -73,20 +74,20 @@ public:
 	void setMinYButtonHeight(int src);
 	int getMaxYButtonHeight();
 	void setMaxYButtonHeight(int src);
-	int getMultiplicatior();
-	void setMultiplicatior(int src);
 	int getRange_slider_value_shoving();
 	int getPopupFadeOut();
 	double gethighPopupFadeOutSteps();
 	double getlowPopupFadeOutSteps();
 	int getlowPopupFadeOutTime();
 	int gethighPopupFadeOutTime();	
-	double getPopupOpacity();
+	double getlowPopupOpacity();
+	double gethighPopupOpacity();
 	int getPopupOverlay();
 	int getLoggingStrength();
-	int getBurstAmt();
-	double getImageSizeMin();
-	double getImageSizeMax();
+	double getlowMultipop();
+	double gethighMultipop();
+	double gethighImageScale();
+	double getlowImageScale();
 
 };
 
