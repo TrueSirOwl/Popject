@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-	RangeSlider::RangeSlider(int X, int Y, int W, int H): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
+	RangeSlider::RangeSlider(int X, int Y, int W, int H, Settings* sett): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
 		knob_offset = (knob_width / w()) * max_val;
 		low_input = new Fl_Value_Input(x() - 50, y(), 50, h());
 		high_input = new Fl_Value_Input(x() + w(), y(), 50, h());
@@ -17,17 +17,36 @@
 		hx = x() + value_size_ratio * high_val + knob_width + 2;
 	}
 
+	void RangeSlider::limit_vals() {
+		temphval = high_val;
+		templval = low_val;
+		habove = false;
+		lunder = false;
+
+		if (high_val > max_val) {
+			habove = true;
+			high_val = max_val;
+		}
+		if (low_val < min_val) {
+			lunder = true;
+			low_val = min_val;
+		}
+	}
+	void RangeSlider::reset_val_limiting() {
+		if (habove = true) {
+			high_val = temphval;
+		}
+		if (lunder = true) {
+			low_val = templval;
+		}
+	}
+
+
 	void RangeSlider::draw() {
 		// background
 		fl_draw_box(FL_DOWN_BOX, x(), y(), w(), h(), FL_BACKGROUND_COLOR);
 
-		// low and high end selector location
-		if (high_val > max_val) {
-			high_val = max_val;
-		}
-		if (low_val < min_val) {
-			low_val = min_val;
-		}
+		limit_vals();
 
 		CalculateKnobPosition();
 
@@ -35,12 +54,15 @@
 		fl_color(136);
 		fl_rectf(lx + knob_width, y() + lower_button_offset, hx - lx - lower_button_offset, h()-4);
 
+		//if (hx < lx + knob_width) {
+		//	hx = lx + knob_width;
+		//}
+
 		// selectors
-		if (hx < lx + knob_width) {
-			hx = lx + knob_width;
-		}
 		fl_draw_box(FL_UP_BOX, lx, y() + lower_button_offset, knob_width, h()-4, FL_LIGHT2);
 		fl_draw_box(FL_UP_BOX, hx, y() + lower_button_offset, knob_width, h()-4, FL_LIGHT2);
+
+		reset_val_limiting();
 	}
 
 	void RangeSlider::UpdateValueInputs() {
@@ -85,7 +107,9 @@
 
 	int RangeSlider::handle(int event) {
 		int mx = Fl::event_x();
+		limit_vals();
 		CalculateKnobPosition();
+		reset_val_limiting();
 		int lx_offset = knob_width / 2;
 	
 		double val = 0;
@@ -113,17 +137,20 @@
 						val = max_val;
 					}
 					if (dragging_low) {
-						if (val > high_val) {
+						if (val > high_val && value_shoving == false) {
 							val = high_val;
+						} else if (val > high_val && value_shoving == true) {
+							high_val = val;
 						}
 						low_val = val;
 					} else {
-						if (val < low_val) {
+						if (val < low_val && value_shoving == false) {
 							val = low_val;
+						} else if (val < low_val && value_shoving == true) {
+							low_val = val;
 						}
 						high_val = val;
 					}
-					std::cout << val << std::endl;
 					redraw();
 					do_callback(); // notify changes
 				}
