@@ -174,8 +174,12 @@ int SettGui::getPopupFadeOut() {
 	return(this->PopSett->PopupFadeOut->value());
 }
 
-int SettGui::getPopupFadeOutSteps() {
-	return(this->PopSett->PopupFadeOutStepsInput->value());
+double SettGui::gethighPopupFadeOutSteps() {
+	return(this->PopSett->PopupFadeOutStepsRangeSlider->get_high_value());
+}
+
+double SettGui::getlowPopupFadeOutSteps() {
+	return(this->PopSett->PopupFadeOutStepsRangeSlider->get_low_value());
 }
 
 int SettGui::getPopupFadeOutTime() {
@@ -226,7 +230,8 @@ void saveAndClose(Fl_Widget* win, void* Src) {
 	Settings << "Multiplicator=" << Gui->getMultiplicatior() << std::endl;
 	Settings << "BurstAmt=" << Gui->getBurstAmt() << std::endl;
 	Settings << "PopupFadeOut=" << Gui->getPopupFadeOut() << std::endl;
-	Settings << "PopupFadeOutSteps=" << Gui->getPopupFadeOutSteps() << std::endl;
+	Settings << "lowPopupFadeOutSteps=" << Gui->getlowPopupFadeOutSteps() << std::endl;
+	Settings << "highPopupFadeOutSteps=" << Gui->gethighPopupFadeOutSteps() << std::endl;
 	Settings << "PopupFadeOutTime=" << Gui->getPopupFadeOutTime() << std::endl;
 	Settings << "PopupOpacity=" << Gui->getPopupOpacity() << std::endl;
 	Settings << "PopupOverlay=" << Gui->getPopupOverlay() << std::endl;

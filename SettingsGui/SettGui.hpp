@@ -76,7 +76,8 @@ public:
 	int getMultiplicatior();
 	void setMultiplicatior(int src);
 	int getPopupFadeOut();
-	int getPopupFadeOutSteps();
+	double gethighPopupFadeOutSteps();
+	double getlowPopupFadeOutSteps();
 	int getPopupFadeOutTime();
 	double getPopupOpacity();
 	int getPopupOverlay();

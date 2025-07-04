@@ -24,7 +24,8 @@ Settings *ReadSettings(const char* loc) {
 		{"Multiplicator", Setting::Multiplicator},
 		{"BurstAmt", Setting::BurstAmt},
 		{"PopupFadeOut", Setting::PopupFadeOut},
-		{"PopupFadeOutSteps", Setting::PopupFadeOutSteps},
+		{"lowPopupFadeOutSteps", Setting::lowPopupFadeOutSteps},
+		{"highPopupFadeOutSteps", Setting::highPopupFadeOutSteps},
 		{"PopupFadeOutTime", Setting::PopupFadeOutTime},
 		{"PopupOpacity", Setting::PopupOpacity},
 		{"PopupOverlay", Setting::Overlay},
@@ -39,7 +40,7 @@ Settings *ReadSettings(const char* loc) {
 		std::ofstream creator("shared/Settings.txt");
 	}
 	while (std::getline(setting, line)) {
-		assign(line, OwOWhatSettingDis(line, lineToEnumMap), SettingsStruct);
+		assign_from_file(line, OwOWhatSettingDis(line, lineToEnumMap), SettingsStruct);
 		++settingsDone;
 	}
 
@@ -62,7 +63,7 @@ Setting OwOWhatSettingDis(std::string line, const std::map<std::string, Setting>
 	}
 }
 
-void assign(std::string line, Setting sett, Settings* SettingsStruct) {
+void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 	switch (sett)
 	{
 	case Setting::ButtonX:
@@ -116,11 +117,15 @@ void assign(std::string line, Setting sett, Settings* SettingsStruct) {
 	case Setting::PopupFadeOut:
 		SettingsStruct->PopupFadeOut = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
-	
-	case Setting::PopupFadeOutSteps:
-		SettingsStruct->PopupFadeOutSteps = std::stoi(line.substr(line.find('=') + 1, line.length()));
+
+	case Setting::lowPopupFadeOutSteps:
+		SettingsStruct->lowPopupFadeOutSteps = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
-	
+
+	case Setting::highPopupFadeOutSteps:
+		SettingsStruct->highPopupFadeOutSteps = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		break;
+
 	case Setting::PopupFadeOutTime:
 		SettingsStruct->PopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -164,7 +169,8 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->Multiplicator = 0;
 	sett->Overlay = 1;
 	sett->PopupFadeOut = true;
-	sett->PopupFadeOutSteps = 1000;
+	sett->lowPopupFadeOutSteps = 100;
+	sett->highPopupFadeOutSteps = 1000;
 	sett->PopupFadeOutTime = 1000;
 	sett->PopupLifespan = 10000;
 	sett->PopupOpacity = 0.50;

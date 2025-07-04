@@ -181,6 +181,14 @@
 		}
 	}
 
+	double RangeSlider::get_low_value() {
+		return (this->low_input->value());
+	}
+
+	double RangeSlider::get_high_value() {
+		return (this->high_input->value());
+	}
+
 	void RangeSlider::set_bounds(double minv, double maxv) {
 		min_val = minv;
 		max_val = maxv;

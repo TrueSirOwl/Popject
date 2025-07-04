@@ -10,6 +10,7 @@
 #include "../shared/Settings.hpp"
 #include <string>
 #include <algorithm>
+#include "RangeSlider.hpp"
 
 class PopupSettings : public Fl_Double_Window
 {
@@ -20,6 +21,8 @@ private:
 public:
 	int X, Y , W, H;
 
+	RangeSlider* test;
+
 	//------------------------------------------------
 	int Buttonx, Buttony, Buttonw, Buttonh;
 	Fl_Value_Slider* ButtonXinput;
@@ -28,6 +31,9 @@ public:
 	//------------------------------------------------
 	int Fadex, Fadey, Fadew, Fadeh;
 	Fl_Check_Button* PopupFadeOut;
+	RangeSlider* PopupFadeOutStepsRangeSlider;
+	RangeSlider* PopupFadeOutTimeRangeSlider;
+	
 	Fl_Hor_Slider* PopupFadeOutStepsSlider;
 	Fl_Hor_Slider* PopupFadeOutTimeSlider;
 	Fl_Value_Input* PopupFadeOutStepsInput;

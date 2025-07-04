@@ -41,6 +41,8 @@ class RangeSlider : public Fl_Widget {
 	int handle(int event) override;
 	void set_low(double v);
 	void set_high(double v);
+	double get_low_value();
+	double get_high_value();
 	void set_bounds(double minv, double maxv);
 	void maximum(double maximum);
 	void minimum(double minimum);

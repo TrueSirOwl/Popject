@@ -39,18 +39,21 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->PopupFadeOut->tooltip("Enables Popup Fadeout after Lifetime runs out");
 	this->PopupFadeOut->callback(ActivateFadeout, this);
 
-	this->PopupFadeOutStepsSlider = new Fl_Hor_Slider(Fadex, Fadey+20, 220, 20, "Steps");
-	this->PopupFadeOutStepsSlider->align(FL_ALIGN_LEFT);
-	this->PopupFadeOutStepsSlider->value(this->SettingsFileContent->PopupFadeOutSteps);
-	this->PopupFadeOutStepsSlider->tooltip("Sets the amount of Steps the Fade out takes to dissapear (one step takes one time");
-	this->PopupFadeOutStepsSlider->step(1);
-	this->PopupFadeOutStepsSlider->maximum(5000);
-	this->PopupFadeOutStepsSlider->minimum(3);
-	this->PopupFadeOutStepsSlider->callback(SetPopupFadeOutStepsInput, this);
+	this->PopupFadeOutStepsRangeSlider = new RangeSlider(Fadex+50, Fadey+20, 220, 20, "Steps", sett);
+	this->PopupFadeOutStepsRangeSlider->value(this->SettingsFileContent->lowPopupFadeOutSteps, this->SettingsFileContent->highPopupFadeOutSteps);
+	this->PopupFadeOutStepsRangeSlider->tooltip("Sets the amount of Steps the Fade out takes to dissapear (one step takes one time");
+	this->PopupFadeOutStepsRangeSlider->step(1);
+	this->PopupFadeOutStepsRangeSlider->maximum(5000);
+	this->PopupFadeOutStepsRangeSlider->minimum(3);
 
-	this->PopupFadeOutStepsInput = new Fl_Value_Input(Fadex+220, Fadey+20,50,20);
-	this->PopupFadeOutStepsInput->value(this->SettingsFileContent->PopupFadeOutSteps);
-	this->PopupFadeOutStepsInput->callback(SetPopupFadeOutStepsSlider, this);
+	// this->PopupFadeOutStepsSlider = new Fl_Hor_Slider(Fadex, Fadey+20, 220, 20, "Steps");
+	// this->PopupFadeOutStepsSlider->align(FL_ALIGN_LEFT);
+	// this->PopupFadeOutStepsSlider->callback(SetPopupFadeOutStepsInput, this);
+
+	// this->PopupFadeOutStepsInput = new Fl_Value_Input(Fadex+220, Fadey+20,50,20);
+	// this->PopupFadeOutStepsInput->value(this->SettingsFileContent->PopupFadeOutSteps);
+	// this->PopupFadeOutStepsInput->callback(SetPopupFadeOutStepsSlider, this);
+	// this->PopupFadeOutStepsInput->when(FL_WHEN_RELEASE);
 
 	this->PopupFadeOutTimeSlider = new Fl_Hor_Slider(Fadex, Fadey+40, 220, 20, "Time");
 	this->PopupFadeOutTimeSlider->align(FL_ALIGN_LEFT);
@@ -403,9 +406,8 @@ PopupSettings::~PopupSettings() {
 	delete (this->ButtonYinput);
 	delete (this->ButtonTextInput);
 	delete (this->PopupFadeOut);
-	delete (this->PopupFadeOutStepsSlider);
+	delete (this->PopupFadeOutStepsRangeSlider);
 	delete (this->PopupFadeOutTimeSlider);
-	delete (this->PopupFadeOutStepsInput);
 	delete (this->PopupFadeOutTimeInput);
 	delete (this->PopupOpacitySlider);
 	delete (this->PopupOpacityInput);

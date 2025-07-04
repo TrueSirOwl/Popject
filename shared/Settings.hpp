@@ -20,7 +20,8 @@ enum Setting
 	Multiplicator,
 	BurstAmt,
 	PopupFadeOut,
-	PopupFadeOutSteps,
+	lowPopupFadeOutSteps,
+	highPopupFadeOutSteps,
 	PopupFadeOutTime,
 	PopupOpacity,
 	LoggingStrength,
@@ -44,7 +45,8 @@ struct Settings
 	int Multiplicator;
 	int BurstAmt;
 	bool PopupFadeOut;
-	double PopupFadeOutSteps;
+	double lowPopupFadeOutSteps;
+	double highPopupFadeOutSteps;
 	int PopupFadeOutTime;
 	double PopupOpacity;
 	int LoggingStrenght;
@@ -55,5 +57,5 @@ struct Settings
 
 Settings*	ReadSettings(const char* str);
 Setting		OwOWhatSettingDis(const std::string line, const std::map<std::string, Setting> lineToEnumMap);
-void		assign(std::string line, Setting sett, Settings *settingStruct);
+void		assign_from_file(std::string line, Setting sett, Settings *settingStruct);
 void		setStandardSettingsFile(Settings* sett);
