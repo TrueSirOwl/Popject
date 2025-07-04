@@ -75,6 +75,7 @@ public:
 	void setMaxYButtonHeight(int src);
 	int getMultiplicatior();
 	void setMultiplicatior(int src);
+	int getRange_slider_value_shoving();
 	int getPopupFadeOut();
 	double gethighPopupFadeOutSteps();
 	double getlowPopupFadeOutSteps();

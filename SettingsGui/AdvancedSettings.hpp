@@ -3,6 +3,7 @@
 #include <FL/Fl_Value_Input.H>
 #include <FL/Fl_Hor_Slider.H>
 #include <FL/Fl_Text_Display.H>
+#include <FL/Fl_Check_Button.H>
 #include "../shared/Settings.hpp"
 
 class AdvancedSettings : public Fl_Window
@@ -27,6 +28,10 @@ public:
 	Fl_Hor_Slider* LoggingStrength;
 	Fl_Text_Display* LoggingStrengthText;
 	Fl_Text_Buffer* LoggingStrengthTextContent;
+	/*-----------------------------------*/
+	int range_slider_value_shovingx,range_slider_value_shovingy;
+
+	Fl_Check_Button* range_slider_value_shoving;
 
 	static void SetLoggingStrenght(Fl_Widget* w, void* data);
 

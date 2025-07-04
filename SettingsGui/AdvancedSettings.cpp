@@ -47,6 +47,15 @@ AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) :
 	this->LoggingStrength->do_callback();
 
 	/*----------------------------------------------------------------------------------*/
+	range_slider_value_shovingx = 60;
+	range_slider_value_shovingy = 90;
+
+	this->range_slider_value_shoving = new Fl_Check_Button(range_slider_value_shovingx, range_slider_value_shovingy, 20,20,"value shoving");
+	this->range_slider_value_shoving->tooltip("Enables or disables value shoving on range sliders");
+	this->range_slider_value_shoving->value(this->SettingsFileContent->Range_slider_value_shoving);
+
+
+
 }
 
 AdvancedSettings::~AdvancedSettings()
@@ -58,6 +67,7 @@ AdvancedSettings::~AdvancedSettings()
 	delete (this->LoggingStrength);
 	delete (this->LoggingStrengthText);
 	delete (this->LoggingStrengthTextContent);
+	delete (this->range_slider_value_shoving);
 }
 
 void AdvancedSettings::SetLoggingStrenght(Fl_Widget* w, void* data) {

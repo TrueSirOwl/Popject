@@ -166,6 +166,10 @@ int SettGui::getMultiplicatior() {
 	return(this->PopSett->MultiplicatiorInput->value());
 }
 
+int SettGui::getRange_slider_value_shoving() {
+	return(this->AdvSett->range_slider_value_shoving->value());
+}
+
 void SettGui::setMultiplicatior(int src) {
 	this->PopSett->MultiplicatiorInput->value(src);
 }
@@ -238,6 +242,8 @@ void saveAndClose(Fl_Widget* win, void* Src) {
 	Settings << "LoggingStrength=" << Gui->getLoggingStrength() << std::endl;
 	Settings << "ImageSizeMin=" << Gui->getImageSizeMin() << std::endl;
 	Settings << "ImageSizeMax=" << Gui->getImageSizeMax() << std::endl;
+	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
+
 	//Settings << "" << Gui << std::endl;
 	if (Fl::event() == FL_CLOSE) {
 		win->hide();

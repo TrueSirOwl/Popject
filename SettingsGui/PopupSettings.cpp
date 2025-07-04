@@ -70,8 +70,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 
 	if (this->PopupFadeOut->value() == 0) {
 		this->PopupFadeOutTimeSlider->deactivate();
-		this->PopupFadeOutStepsSlider->deactivate();
-		this->PopupFadeOutStepsInput->deactivate();
+		this->PopupFadeOutStepsRangeSlider->deactivate();
 		this->PopupFadeOutTimeInput->deactivate();
 	}
 	//------------------------------------------------
@@ -288,14 +287,12 @@ void PopupSettings::ActivateFadeout(Fl_Widget* w, void* data) {
 	PopupSettings* Gui = static_cast<PopupSettings*>(data);
 	if (Gui->PopupFadeOut->value() == 0) {
 		Gui->PopupFadeOutTimeSlider->deactivate();
-		Gui->PopupFadeOutStepsSlider->deactivate();
-		Gui->PopupFadeOutStepsInput->deactivate();
+		Gui->PopupFadeOutStepsRangeSlider->deactivate();
 		Gui->PopupFadeOutTimeInput->deactivate();
 	}
 	else {
 		Gui->PopupFadeOutTimeSlider->activate();
-		Gui->PopupFadeOutStepsSlider->activate();
-		Gui->PopupFadeOutStepsInput->activate();
+		Gui->PopupFadeOutStepsRangeSlider->activate();
 		Gui->PopupFadeOutTimeInput->activate();
 	}
 }
