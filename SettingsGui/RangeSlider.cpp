@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-	RangeSlider::RangeSlider(int X, int Y, int W, int H, const char* name, Settings* sett): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
+	RangeSlider::RangeSlider(int X, int Y, int W, int H, const char* name, Settings* sett): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0), value_shoving(sett->Range_slider_value_shoving){
 		knob_offset = (knob_width / w()) * max_val;
 		low_input = new Fl_Value_Input(x() - 50, y(), 50, h(), name);
 		high_input = new Fl_Value_Input(x() + w(), y(), 50, h());
