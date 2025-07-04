@@ -20,6 +20,7 @@ enum Setting
 	Multiplicator,
 	BurstAmt,
 	PopupFadeOut,
+	Range_slider_value_shoving,
 	lowPopupFadeOutSteps,
 	highPopupFadeOutSteps,
 	PopupFadeOutTime,
@@ -45,6 +46,7 @@ struct Settings
 	int Multiplicator;
 	int BurstAmt;
 	bool PopupFadeOut;
+	bool Range_slider_value_shoving;
 	double lowPopupFadeOutSteps;
 	double highPopupFadeOutSteps;
 	int PopupFadeOutTime;

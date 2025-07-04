@@ -16,6 +16,7 @@ Settings *ReadSettings(const char* loc) {
 		{"ButtonText", Setting::ButtonText},
 		{"PopupLifespan", Setting::PopupLifespan},
 		{"TimeBetweenPopups", Setting::TimeBetweenPopups},
+		{"Range_slider_value_shoving", Setting::Range_slider_value_shoving},
 		{"ImageFolderPath", Setting::ImageFolderPath},
 		{"MinXButtonHeight", Setting::MinXButtonHeight},
 		{"MaxXButtonHeight", Setting::MaxXButtonHeight},
@@ -150,6 +151,9 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 		SettingsStruct->ImageSizeMax = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
+	case Setting::Range_slider_value_shoving:
+		SettingsStruct->Range_slider_value_shoving = std::stoi(line.substr(line.find('=') + 1, line.length()));
+
 	default:
 		break;
 	}
@@ -169,6 +173,7 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->Multiplicator = 0;
 	sett->Overlay = 1;
 	sett->PopupFadeOut = true;
+	sett->Range_slider_value_shoving = false;
 	sett->lowPopupFadeOutSteps = 100;
 	sett->highPopupFadeOutSteps = 1000;
 	sett->PopupFadeOutTime = 1000;
