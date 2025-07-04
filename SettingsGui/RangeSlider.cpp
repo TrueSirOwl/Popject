@@ -6,7 +6,8 @@
 		knob_offset = (knob_width / w()) * max_val;
 		low_input = new Fl_Value_Input(x() - 50, y(), 50, h(), name);
 		high_input = new Fl_Value_Input(x() + w(), y(), 50, h());
-		low_input->when(FL_WHEN_RELEASE);
+		low_input->when(FL_WHEN_ENTER_KEY);
+		high_input->when(FL_WHEN_ENTER_KEY);
 		low_input->callback(set_low_val,this);
 		high_input->callback(set_high_val,this);
 	}
@@ -78,9 +79,13 @@
 		RangeSlider* slider = static_cast<RangeSlider*>(data);
 		if (slider->low_input->value() < slider->high_val) {
 			slider->low_val = slider->low_input->value();
-		} else {
+		} else if (slider->value_shoving == false) {
 			slider->low_val = slider->high_val;
 			slider->low_input->value(slider->high_val);
+		} else if (slider->value_shoving == true) {
+			slider->low_val = slider->low_input->value();
+			slider->high_val = slider->low_val;
+			slider->high_input->value(slider->low_val);
 		}
 		slider->redraw();
 	}
@@ -89,9 +94,13 @@
 		RangeSlider* slider = static_cast<RangeSlider*>(data);
 		if (slider->high_input->value() > slider->low_val) {
 			slider->high_val = slider->high_input->value();
-		} else {
+		} else if (slider->value_shoving == false) {
 			slider->high_val = slider->low_val;
 			slider->high_input->value(slider->low_val);
+		} else if (slider->value_shoving == true) {
+			slider->high_val = slider->high_input->value();
+			slider->low_val = slider->high_val;
+			slider->low_input->value(slider->high_val);
 		}
 		slider->redraw();
 	}

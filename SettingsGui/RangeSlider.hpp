@@ -22,7 +22,7 @@ class RangeSlider : public Fl_Widget {
 	bool lunder = false;
 	double stepval;
 
-	bool value_shoving = false;
+	bool value_shoving = true;
 
 	Fl_Value_Input* low_input = NULL;
 	Fl_Value_Input* high_input = NULL;
