@@ -5,6 +5,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Value_Input.H>
 #include "Settings.hpp"
+#include <cmath>
 
 class RangeSlider : public Fl_Widget {
 	double min_val, max_val;
@@ -19,8 +20,9 @@ class RangeSlider : public Fl_Widget {
 	double templval;
 	bool habove = false;
 	bool lunder = false;
+	double stepval;
 
-	bool value_shoving = true;
+	bool value_shoving = false;
 
 	Fl_Value_Input* low_input = NULL;
 	Fl_Value_Input* high_input = NULL;
@@ -34,7 +36,7 @@ class RangeSlider : public Fl_Widget {
 	public:
 	void tooltip(const char* text);
 	void value(double min, double max);
-	RangeSlider(int X, int Y, int W, int H, Settings* sett);
+	RangeSlider(int X, int Y, int W, int H, const char* name, Settings* sett);
 	void draw() override;
 	int handle(int event) override;
 	void set_low(double v);
@@ -44,4 +46,5 @@ class RangeSlider : public Fl_Widget {
 	void minimum(double minimum);
 	void CalculateKnobPosition();
 	void UpdateValueInputs();
+	void step(double step);
 };

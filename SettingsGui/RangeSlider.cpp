@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-	RangeSlider::RangeSlider(int X, int Y, int W, int H, Settings* sett): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
+	RangeSlider::RangeSlider(int X, int Y, int W, int H, const char* name, Settings* sett): Fl_Widget(X, Y, W, H), min_val(0), max_val(100), low_val(20), high_val(80), lx(0), hx(0){
 		knob_offset = (knob_width / w()) * max_val;
-		low_input = new Fl_Value_Input(x() - 50, y(), 50, h());
+		low_input = new Fl_Value_Input(x() - 50, y(), 50, h(), name);
 		high_input = new Fl_Value_Input(x() + w(), y(), 50, h());
 		low_input->when(FL_WHEN_RELEASE);
 		low_input->callback(set_low_val,this);
@@ -68,6 +68,10 @@
 	void RangeSlider::UpdateValueInputs() {
 		low_input->value(low_val);
 		high_input->value(high_val);
+	}
+
+	void RangeSlider::step(double _step) {
+		stepval = _step;
 	}
 
 	void RangeSlider::set_low_val(Fl_Widget* w, void* data) {
@@ -140,16 +144,16 @@
 						if (val > high_val && value_shoving == false) {
 							val = high_val;
 						} else if (val > high_val && value_shoving == true) {
-							high_val = val;
+							high_val = std::round(val / stepval) * stepval;
 						}
-						low_val = val;
+						low_val = std::round(val / stepval) * stepval;
 					} else {
 						if (val < low_val && value_shoving == false) {
 							val = low_val;
 						} else if (val < low_val && value_shoving == true) {
-							low_val = val;
+							low_val = std::round(val / stepval) * stepval;
 						}
-						high_val = val;
+						high_val = std::round(val / stepval) * stepval;
 					}
 					redraw();
 					do_callback(); // notify changes
