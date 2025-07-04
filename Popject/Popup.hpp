@@ -10,6 +10,8 @@
 #include "../shared/Settings.hpp"
 #include <thread>
 #include <mutex>
+#include <random>
+#include <chrono>
 //#include "../shared/Debug.h"
 
 enum ContentType
@@ -35,7 +37,6 @@ private:
 
 	SDL_Rect* dispbounds;
 
-
 	SDL_Thread* sdl_loader;
 
 	IMG_Animation *Gif;
@@ -51,8 +52,15 @@ private:
 	struct timeb start;
 	struct timeb middle;
 
+	double fadeout_random_val;
 	double dimin;
 	double step;
+
+	std::random_device rd;
+	std::mt19937::result_type seed;
+	std::mt19937 rng;
+
+	void create_rng();
 
 	void getImage();
 	void scale();
@@ -64,6 +72,7 @@ private:
 	void DoGIF();
 	void FadeOut();
 	void GifFadeout();
+	void setPopupFadeOutSteps();
 
 	void SetWindowClickThrough();
 

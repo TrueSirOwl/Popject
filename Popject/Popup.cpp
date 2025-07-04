@@ -1,17 +1,32 @@
 #include "Popup.hpp"
-#include <random>
 #include <algorithm>
-#include <chrono>
 #include <SDL3/SDL_thread.h>
 
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
 sett(popsett), ImageLib(src), lifetime(sett.PopupLifespan), death(false), dispbounds(displays),
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
+	create_rng();
 	this->start = {};
 	this->middle = {};
-	this->dimin = this->sett.PopupOpacity / this->sett.PopupFadeOutSteps;
-	this->step = this->sett.PopupFadeOutTime / this->sett.PopupFadeOutSteps;
+	std::uniform_real_distribution<double> fadeout_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
+	fadeout_random_val = fadeout_random_dist(rng);
+	this->dimin = this->sett.PopupOpacity / fadeout_random_val;
+	this->step = this->sett.PopupFadeOutTime / fadeout_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
+}
+
+
+void Popup::create_rng() {
+	seed = rd() ^ (
+	(std::mt19937::result_type)
+	std::chrono::duration_cast<std::chrono::seconds>(
+		std::chrono::system_clock::now().time_since_epoch()
+		).count() +
+	(std::mt19937::result_type)
+	std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::high_resolution_clock::now().time_since_epoch()
+		).count() );
+	rng = std::mt19937(seed);
 }
 
 int Popup::getImageT(void* data) {
@@ -20,7 +35,9 @@ int Popup::getImageT(void* data) {
 	return(0);
 }
 
-void Popup::getImage() {
+
+void Popup::getImage()
+{
 	this->ContentPath = ImageLib.getRandomImage();
 	if (this->ContentPath.substr(this->ContentPath.find_last_of('.') + 1) == "gif") {
 		this->Gif = IMG_LoadAnimation(this->ContentPath.c_str());
@@ -36,26 +53,22 @@ void Popup::getImage() {
 void Popup::scale() {
 	double sourceSize, targetSize;
 
-	std::random_device rd;
-	std::default_random_engine randomizerEngine(rd());
 	std::uniform_real_distribution<double> scaleFactor(this->sett.ImageSizeMin, this->sett.ImageSizeMax);
 	sourceSize = std::min<int>(dispbounds[0].w, dispbounds[0].h) / (std::max<int>(this->imageSurface->w, this->imageSurface->h));
 
-	targetSize = scaleFactor(randomizerEngine);
+	targetSize = scaleFactor(rng);
 	this->resizeFactor = targetSize / sourceSize;
 	this->target.w = static_cast<int>(this->imageSurface->w * resizeFactor);
 	this->target.h = static_cast<int>(this->imageSurface->h * resizeFactor);
 }
 
 void Popup::place() {
-	std::random_device rd;
-	std::default_random_engine randomizerEngine(rd());
 	std::uniform_int_distribution<int> WhereH(0, dispbounds[0].h - this->target.h);
 	std::uniform_int_distribution<int> WhereW(0, dispbounds[0].w - this->target.w);
 	//std::uniform_int_distribution<int> WhereH(0, 1080 - this->target.h);
 	//std::uniform_int_distribution<int> WhereW(0, 1920 - this->target.w);
-	this->target.x = WhereW(randomizerEngine);
-	this->target.y = WhereH(randomizerEngine);
+	this->target.x = WhereW(rng);
+	this->target.y = WhereH(rng);
 }
 
 bool Popup::Prep() {
