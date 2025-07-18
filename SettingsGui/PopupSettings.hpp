@@ -58,23 +58,7 @@ public:
 	//------------------------------------------------
 
 	static void ResizeButtonTextField(Fl_Widget* w, void* data);
-	static void SetTimeBeteenPopups(Fl_Widget* w, void* data);
-	static void SetTimeBetweenPopupsSlider(Fl_Widget* w, void* data);
-	static void SetTimeBetweenPopupsInput(Fl_Widget* w, void* data);
-	static void SetPopupLifespan(Fl_Widget* w, void* data);
-	static void SetInputLifespan(Fl_Widget* w, void* data);
-	static void SetSliderLifespan(Fl_Widget* w, void* data);
 	static void ActivateFadeout(Fl_Widget* w, void* data);
-	static void SetPopupFadeOutStepsInput(Fl_Widget* w, void* data);
-	static void SetPopupFadeOutTimeInput(Fl_Widget* w, void* data);
-	static void SetPopupFadeOutStepsSlider(Fl_Widget* w, void* data);
-	static void SetPopupFadeOutTimeSlider(Fl_Widget* w, void* data);
-	static void SetPopupOpacitySlider(Fl_Widget* w, void* data);
-	static void SetPopupOpacityInput(Fl_Widget* w, void* data);
-	static void SetBurstModeActivity(Fl_Widget* w, void* data);
-	static void SetBurstAmountSlider(Fl_Widget* w, void* data);
-	static void SetBurstAmountInput(Fl_Widget* w, void* data);
-	static void SetImageScaleRangeSlider(Fl_Widget* w, void* data);
 
 	PopupSettings(int x, int y, int w, int h, Settings* sett);
 	~PopupSettings();
