@@ -81,7 +81,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 
 	//------------------------------------------------
 
-	Lifespanx = 2000;
+	Lifespanx = 200;
 	Lifespany = 70;
 	Lifespanw = 0;
 	Lifespanh = 0;
