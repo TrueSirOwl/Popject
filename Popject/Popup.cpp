@@ -177,7 +177,11 @@ void Popup::GifFadeout() {
 
 	if (opacity_random_val > 0.001) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			opacity_random_val -= fadeout_dimin_per_step;
+			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
+			if (stepmult > 10000) {
+				stepmult = 1;
+			}
+			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			renderGif();
 			middle = middle1;
 		} else {
@@ -195,7 +199,11 @@ void Popup::FadeOut() {
 
 	if (opacity_random_val > 0.001) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			opacity_random_val -= fadeout_dimin_per_step;
+			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
+			if (stepmult > 10000) {
+				stepmult = 1;
+			}
+			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
 			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 			middle = middle1;
