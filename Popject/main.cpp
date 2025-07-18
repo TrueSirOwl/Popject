@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
 	//Initialize window and renderer
 	SDL_CreateWindowAndRenderer("title",dispbounds[0].w, dispbounds[0].h, SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_TRANSPARENT | SDL_WINDOW_NOT_FOCUSABLE| SDL_WINDOW_BORDERLESS, &window,&renderer);
 
+	SDL_SetRenderVSync(renderer, 1);
+
 	//set up and display window and renderer
 	SetWindowClickThrough(window);
 	SDL_RenderClear(renderer);
