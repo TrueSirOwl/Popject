@@ -79,6 +79,8 @@ private:
 
 	void SetWindowClickThrough();
 
+	void PopupRemoval();
+
 public:
 	long long lifetime;
 

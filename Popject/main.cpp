@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	}
 	
 	SDL_Init(SDL_INIT_VIDEO);
-	Settings* Sett = ReadSettings(loc.c_str());
+	Settings* Sett = ReadSettings(loc);
 	CreateLogFile();
 	
 	signal(SIGINT, SIG_DFL);

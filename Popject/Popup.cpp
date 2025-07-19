@@ -215,6 +215,14 @@ void Popup::FadeOut() {
 	}
 }
 
+void Popup::PopupRemoval() {
+	std::string trashpath = sett.TrashbinPath;
+	std::cout << ContentPath << std::endl;
+	trashpath.append(ContentPath.substr(ContentPath.find_last_of('/')));
+	std::cout << trashpath << std::endl;
+	//std::filesystem::rename(this->ContentPath,trashpath);
+}
+
 Popup::~Popup() {
 	//std::cout << "Popup vaporised" << std::endl;
 	if (this->imageSurface != NULL) {
