@@ -48,5 +48,8 @@ fclean: clean
 	-rm a.out
 	-rm logs/*
 
+clogs: 
+	-rm logs/*
+
 re: fclean all
 
