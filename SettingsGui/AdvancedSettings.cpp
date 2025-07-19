@@ -28,7 +28,7 @@ AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) :
 	this->MinYButtonHeightInput->value(this->SettingsFileContent->MinYButtonHeight);
 	this->hide();
 	/*----------------------------------------------------------------------------------*/
-	Loggingx = 60;
+	Loggingx = 70;
 	Loggingy = 70;
 
 	this->LoggingStrength = new Fl_Hor_Slider(Loggingx, Loggingy, 100, 20,"Logging");
@@ -54,7 +54,15 @@ AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) :
 	this->range_slider_value_shoving->tooltip("Enables or disables value shoving on range sliders");
 	this->range_slider_value_shoving->value(this->SettingsFileContent->Range_slider_value_shoving);
 
+	//------------------------------------------------
+	TrashbinPathx = 155;
+	TrashbinPathy = 170;
+	TrashbinPathw = 0;
+	TrashbinPathh = 0;
 
+	this->TrashbinPath = new Fl_Input(TrashbinPathx, TrashbinPathy, 700, 20, "Trashbin Folder Path");
+	this->TrashbinPath->value(this->SettingsFileContent->TrashbinPath.c_str());
+	this->TrashbinPath->tooltip("this is the folder the program will put images set for deletion in");
 
 }
 

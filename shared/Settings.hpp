@@ -32,7 +32,8 @@ enum Setting
 	LoggingStrength,
 	Overlay,
 	lowImageScale,
-	highImageScale
+	highImageScale,
+	TrashbinPath
 };
 
 
@@ -63,9 +64,10 @@ struct Settings
 	int Overlay;
 	double lowImageScale;
 	double highImageScale;
+	std::string TrashbinPath;
 };
 
-Settings*	ReadSettings(const char* str);
+Settings*	ReadSettings(std::string str);
 Setting		OwOWhatSettingDis(const std::string line, const std::map<std::string, Setting> lineToEnumMap);
-void		assign_from_file(std::string line, Setting sett, Settings *settingStruct);
+void		load_from_file(std::string line, Setting sett, Settings *settingStruct);
 void		setStandardSettingsFile(Settings* sett);

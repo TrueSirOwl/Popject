@@ -32,6 +32,10 @@ public:
 	int range_slider_value_shovingx,range_slider_value_shovingy;
 
 	Fl_Check_Button* range_slider_value_shoving;
+	//------------------------------------------------
+	int TrashbinPathx, TrashbinPathy, TrashbinPathw, TrashbinPathh;
+
+	Fl_Input* TrashbinPath;
 
 	static void SetLoggingStrenght(Fl_Widget* w, void* data);
 

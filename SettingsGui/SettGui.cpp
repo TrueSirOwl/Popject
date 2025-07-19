@@ -5,12 +5,12 @@
 #include "PopupSettings.hpp"
 #include "GeneralSettings.hpp"
 
-SettGui::SettGui(const char* loc) : W(std::min(900,Fl::w())), H(std::min(800,Fl::h())), settingsFileLocation(loc) {
+SettGui::SettGui(std::string loc) : W(std::min(900,Fl::w())), H(std::min(800,Fl::h())), settingsFileLocation(loc) {
 	CreateLogFile();
 	this->SettingsFileContent = ReadSettings(settingsFileLocation);
 	this->Gui = new Fl_Window(0,0, W, H, "Settings");
 	this->saveButton = new Fl_Button(0,H-20,W,20,"Save");
-	this->saveButton->callback(saveAndClose, this);
+	this->saveButton->callback(save, this);
 	this->BuildMenueSelectorPanel(this->SelectorPanelButtonNames);
 	this->GenSett = new GeneralSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
 	Gui->add(GenSett);
@@ -18,8 +18,11 @@ SettGui::SettGui(const char* loc) : W(std::min(900,Fl::w())), H(std::min(800,Fl:
 	Gui->add(PopSett);
 	this->AdvSett = new AdvancedSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
 	Gui->add(AdvSett);
+	this->ImgSett = new ImagesSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
+	Gui->add(ImgSett);
 	Gui->show();
-	Gui->callback(saveAndClose,this);
+	Gui->callback(Close,this);
+	save(NULL,this);
 }
 
 
@@ -36,6 +39,9 @@ void SettGui::update(int CurrentlyOpenPageNum)
 	delete(this->AdvSett);
 	this->AdvSett = new AdvancedSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
 	Gui->add(AdvSett);
+	delete(this->ImgSett);
+	this->ImgSett = new ImagesSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
+	Gui->add(ImgSett);
 	if (CurrentlyOpenPageNum >= 0) {
 		ShowSettingWindow(SelectorPanelButtons[CurrentlyOpenPageNum], this);
 	}
@@ -50,6 +56,7 @@ void SettGui::ShowSettingWindow(Fl_Widget* w,void* name) {
 	Gui->GenSett->hide();
 	Gui->PopSett->hide();
 	Gui->AdvSett->hide();
+	Gui->ImgSett->hide();
 	if (!strcmp(w->label(), "General")) {
 		Gui->GenSett->show();
 	}
@@ -58,6 +65,9 @@ void SettGui::ShowSettingWindow(Fl_Widget* w,void* name) {
 	}
 	else if (!strcmp(w->label(), "Advanced")) {
 		Gui->AdvSett->show();
+	}
+	else if (!strcmp(w->label(), "Images")) {
+		Gui->ImgSett->show();
 	}
 	w->box(FL_DOWN_BOX);
 }
@@ -100,7 +110,6 @@ void SettGui::setButtonY(int src) {
 int SettGui::getButtonY() {
 	return (this->PopSett->ButtonYinput->value());
 }
-
 
 void SettGui::setButtonText(char* src) {
 	this->PopSett->ButtonTextInput->value(src);
@@ -220,10 +229,33 @@ double SettGui::gethighImageScale() {
 
 double SettGui::getlowImageScale() {
 	return(this->PopSett->ImageScaleRangeSlider->get_high_value());
-
 }
 
-void saveAndClose(Fl_Widget* win, void* Src) {
+const char* SettGui::getTrashbinPath() {
+	return(this->AdvSett->TrashbinPath->value());
+}
+
+void Close(Fl_Widget* win, void* Src) {
+	SettGui* Gui = static_cast<SettGui*>(Src);
+	switch (fl_choice("do you want to save?", "cancel" , "yes", "no")) {
+	case 0:
+		std::cout << "0 (cancel)" << std::endl;
+		break;
+	case 1:
+		std::cout << "1 (save)" << std::endl;
+		save(win, Src);
+		win->hide();
+		break;
+	case 2:
+		std::cout << "2 (close)" << std::endl;
+		win->hide();
+		break;
+	default:
+		break;
+	}
+}
+
+void save(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
 	std::ofstream Settings("shared/Settings.txt");
 	if (Settings.is_open() == false) {
@@ -255,14 +287,16 @@ void saveAndClose(Fl_Widget* win, void* Src) {
 	Settings << "lowImageScale=" << Gui->gethighImageScale() << std::endl;
 	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
 	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
+	Settings << "TrashbinPath=" << Gui->getTrashbinPath() << std::endl;
+	std::filesystem::path neww(Gui->getTrashbinPath());
+	std::filesystem::create_directories(neww);
+	if (Gui->SettingsFileContent->TrashbinPath != Gui->getTrashbinPath()) {
+		std::filesystem::path old(Gui->SettingsFileContent->TrashbinPath);
+		std::filesystem::rename(old, neww);
+		fl_choice("Trash location changed", "ok",0,0);
+	}
+	Gui->SettingsFileContent = ReadSettings(Gui->settingsFileLocation);
 
-	//Settings << "" << Gui << std::endl;
-	if (Fl::event() == FL_CLOSE) {
-		win->hide();
-	}
-	else {
-		Gui->update(Gui->GetCurrentlyOpenPage());
-	}
 }
 
 SettGui::~SettGui()

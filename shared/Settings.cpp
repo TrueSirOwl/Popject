@@ -2,13 +2,22 @@
 #include <fstream>
 #include <iostream>
 
-Settings *ReadSettings(const char* loc) {
+Settings *ReadSettings(std::string loc) {
 	Settings* SettingsStruct = new Settings;
 	std::string line;
 	std::ifstream setting(loc);
+	std::string stdpath = "./shared/Settings.txt";
 	if (setting.is_open() == false) {
 		std::cerr << "Setting file at: " << loc << " could not be opened!" << std::endl;
-		exit(1);
+		if (loc == stdpath) {
+			std::cout << "Standard settings file was not found, creating it" << std::endl;
+			std::ofstream creator("shared/Settings.txt");
+			setStandardSettingsFile(SettingsStruct);
+		} else {
+			exit(1);
+		}
+	} else {
+		std::cout << "Standard settings file opened" << std::endl;
 	}
 	const std::map<std::string, Setting> lineToEnumMap = {
 		{"ButtonX", Setting::ButtonX},
@@ -36,16 +45,12 @@ Settings *ReadSettings(const char* loc) {
 		{"PopupOverlay", Setting::Overlay},
 		{"LoggingStrength", Setting::LoggingStrength},
 		{"highImageScale",Setting::highImageScale},
-		{"lowImageScale", Setting::lowImageScale}
+		{"lowImageScale", Setting::lowImageScale},
+		{"TrashbinPath", Setting::TrashbinPath}
 	};
 	int settingsDone = 0;
-
-	if (setting.is_open() == 0) {
-		std::cout << "No settings file found" << std::endl;
-		std::ofstream creator("shared/Settings.txt");
-	}
 	while (std::getline(setting, line)) {
-		assign_from_file(line, OwOWhatSettingDis(line, lineToEnumMap), SettingsStruct);
+		load_from_file(line, OwOWhatSettingDis(line, lineToEnumMap), SettingsStruct);
 		++settingsDone;
 	}
 
@@ -68,7 +73,7 @@ Setting OwOWhatSettingDis(std::string line, const std::map<std::string, Setting>
 	}
 }
 
-void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
+void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 	switch (sett)
 	{
 	case Setting::ButtonX:
@@ -174,6 +179,10 @@ void assign_from_file(std::string line, Setting sett, Settings* SettingsStruct) 
 	case Setting::Range_slider_value_shoving:
 		SettingsStruct->Range_slider_value_shoving = std::stoi(line.substr(line.find('=') + 1, line.length()));
 
+	case Setting::TrashbinPath:
+		SettingsStruct->TrashbinPath = line.substr(line.find('=') + 1, line.length());
+		break;
+
 	default:
 		break;
 	}
@@ -206,4 +215,5 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->highTimeBetweenPopups = 10000;
 	sett->lowImageScale = 0.7;
 	sett->highImageScale = 1;
+	sett->TrashbinPath = "./Trash";
 }

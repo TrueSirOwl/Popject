@@ -4,15 +4,18 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Button.H>
+#include <Fl/fl_ask.H>
 #include "PopupSettings.hpp"
 #include "GeneralSettings.hpp"
 #include "AdvancedSettings.hpp"
+#include "ImagesSettings.hpp"
 #include "../shared/Settings.hpp"
 
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Hor_Value_Slider.H>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 class SettGui {
 private:
@@ -27,24 +30,25 @@ private:
 	PopupSettings* PopSett;
 	GeneralSettings* GenSett;
 	AdvancedSettings* AdvSett;
+	ImagesSettings* ImgSett;
 
-	Settings* SettingsFileContent;
-
-	const char* settingsFileLocation;
-
+	
+	
 	std::vector<Fl_Button*> SelectorPanelButtons;
 	std::vector<const char*> SelectorPanelButtonNames = {
-	{"General"},
-	{"Popups"},
-	{"test1"},
-	{"test2"},
-	{"Advanced"}
+		{"General"},
+		{"Popups"},
+		{"Images"},
+		{"test2"},
+		{"Advanced"}
 	};
-
+	
 	static void ShowSettingWindow(Fl_Widget* w, void* name);
-
-public:
-	SettGui(const char* loc = "./shared/Settings.txt");
+	
+	public:
+	std::string settingsFileLocation;
+	Settings* SettingsFileContent;
+	SettGui(std::string loc = "./shared/Settings.txt");
 	~SettGui();
 
 	void update(int CurrentlyOpenPageNum);
@@ -88,7 +92,8 @@ public:
 	double gethighMultipop();
 	double gethighImageScale();
 	double getlowImageScale();
-
+	const char* getTrashbinPath();
 };
 
-void saveAndClose(Fl_Widget* Gui, void* Src);
+void Close(Fl_Widget* win, void* Src);
+void save(Fl_Widget* Gui, void* Src);
