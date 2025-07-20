@@ -94,9 +94,11 @@ int main(int argc, char* argv[]) {
 
 	timeb start;
 	timeb end {};
-	
+	SDL_Event event;
+
 	ftime(&start);
 	while (true) {
+		if (SDL_PollEvent(&event)) {}
 		SetWindowTopmost(window);
 		SDL_RenderClear(renderer);
 		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > TimeBetweenPopups) {
