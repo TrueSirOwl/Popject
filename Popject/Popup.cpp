@@ -60,14 +60,26 @@ void Popup::getImage()
 
 void Popup::scale() {
 	double sourceSize, targetSize;
-
+	
 	std::uniform_real_distribution<double> scaleFactor(this->sett.lowImageScale, this->sett.highImageScale);
-	sourceSize = std::min<int>(dispbounds[0].w, dispbounds[0].h) / (std::max<int>(this->imageSurface->w, this->imageSurface->h));
 
 	targetSize = scaleFactor(rng);
-	this->resizeFactor = targetSize / sourceSize;
+
+	std::cout << "origianl size: w=" << this->imageSurface->w << " h=" << this->imageSurface->h << std::endl;
+
+	double scaleW = dispbounds[0].w * targetSize / imageSurface->w;
+	double scaleH = dispbounds[0].h * targetSize / imageSurface->h;
+	this->resizeFactor = std::min(scaleW, scaleH);
+	//this->resizeFactor = targetSize / sourceSize;
+	
+	//sourceSize = std::min<double>(dispbounds[0].w, dispbounds[0].h) / (std::max<double>(this->imageSurface->w, this->imageSurface->h));
+
+	//std::cout << "targetSize=" << targetSize << "sourceSize=" << sourceSize << std::endl;
+	
+	std::cout << "resize factor=" << resizeFactor << std::endl;
 	this->target.w = static_cast<int>(this->imageSurface->w * resizeFactor);
 	this->target.h = static_cast<int>(this->imageSurface->h * resizeFactor);
+	std::cout << "scaled size: w=" << this->target.w << " h=" << this->target.h << std::endl << std::endl;;
 }
 
 void Popup::place() {
