@@ -15,6 +15,8 @@
 #include <queue>
 #include "Burster.hpp"
 
+void SetWindowTopmost(SDL_Window* window);
+
 int main(int argc, char* argv[]) {
 	
 	std::string loc;
@@ -95,6 +97,7 @@ int main(int argc, char* argv[]) {
 	
 	ftime(&start);
 	while (true) {
+		SetWindowTopmost(window);
 		SDL_RenderClear(renderer);
 		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > TimeBetweenPopups) {
 			if (preps.front()->prep() == true) {
@@ -141,13 +144,34 @@ int main(int argc, char* argv[]) {
 #include <X11/extensions/shape.h>
 #endif
 
+void SetWindowTopmost(SDL_Window* window) {
+    SDL_PropertiesID props = SDL_GetWindowProperties(window);
+    HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+    if (hwnd) {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    } else {
+        std::cerr << "Failed to get HWND from SDL window" << std::endl;
+	SDL_Log("Failed to get HWND from SDL window");
+    }
+}
+
 void SetWindowClickThrough(SDL_Window* window) {
 
 #if defined(SDL_PLATFORM_WIN32)
-	HWND hwnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
-	if (hwnd) {
-			SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE);
-	}
+    SDL_PropertiesID props = SDL_GetWindowProperties(window);
+    HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+    if (hwnd) {
+        // Add necessary extended styles: transparent, no activate, and layered
+        LONG exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+        exStyle |= WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE;
+        SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
+
+        // Ensure window stays always on top
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+   	} else {
+        	std::cerr << "Failed to get HWND from SDL window" << std::endl;
+		SDL_Log("Failed to get HWND from SDL window");
+    	}
 
 #elif defined(SDL_PLATFORM_MACOS)
 	NSWindow *nswindow
