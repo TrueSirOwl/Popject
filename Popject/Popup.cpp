@@ -59,27 +59,14 @@ void Popup::getImage()
 }
 
 void Popup::scale() {
-	double sourceSize, targetSize;
-	
+	double targetSize;
 	std::uniform_real_distribution<double> scaleFactor(this->sett.lowImageScale, this->sett.highImageScale);
-
 	targetSize = scaleFactor(rng);
-
-	std::cout << "origianl size: w=" << this->imageSurface->w << " h=" << this->imageSurface->h << std::endl;
-
 	double scaleW = dispbounds[0].w * targetSize / imageSurface->w;
 	double scaleH = dispbounds[0].h * targetSize / imageSurface->h;
 	this->resizeFactor = std::min(scaleW, scaleH);
-	//this->resizeFactor = targetSize / sourceSize;
-	
-	//sourceSize = std::min<double>(dispbounds[0].w, dispbounds[0].h) / (std::max<double>(this->imageSurface->w, this->imageSurface->h));
-
-	//std::cout << "targetSize=" << targetSize << "sourceSize=" << sourceSize << std::endl;
-	
-	std::cout << "resize factor=" << resizeFactor << std::endl;
 	this->target.w = static_cast<int>(this->imageSurface->w * resizeFactor);
 	this->target.h = static_cast<int>(this->imageSurface->h * resizeFactor);
-	std::cout << "scaled size: w=" << this->target.w << " h=" << this->target.h << std::endl << std::endl;;
 }
 
 void Popup::place() {
@@ -187,13 +174,16 @@ void Popup::GifFadeout() {
 
 	ftime(&middle1);
 
-	if (opacity_random_val > 0.001) {
+	if (opacity_random_val != 0) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
 			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
 			if (stepmult > 10000) {
 				stepmult = 1;
 			}
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
+			if (opacity_random_val < 0) {
+				opacity_random_val = 0;
+			}
 			renderGif();
 			middle = middle1;
 		} else {
@@ -209,13 +199,16 @@ void Popup::FadeOut() {
 
 	ftime(&middle1);
 
-	if (opacity_random_val > 0.001) {
+	if (opacity_random_val != 0) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
 			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
 			if (stepmult > 10000) {
 				stepmult = 1;
 			}
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
+			if (opacity_random_val < 0) {
+				opacity_random_val = 0;
+			}
 			SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
 			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 			middle = middle1;
