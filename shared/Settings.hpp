@@ -30,7 +30,6 @@ enum Setting
 	lowPopupOpacity,
 	highPopupOpacity,
 	LoggingStrength,
-	Overlay,
 	lowImageScale,
 	highImageScale,
 	TrashbinPath,
@@ -63,7 +62,6 @@ struct Settings
 	double lowPopupOpacity;
 	double highPopupOpacity;
 	int LoggingStrenght;
-	int Overlay;
 	double lowImageScale;
 	double highImageScale;
 	std::string TrashbinPath;

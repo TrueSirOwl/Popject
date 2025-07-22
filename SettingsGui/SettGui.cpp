@@ -136,11 +136,11 @@ const char* SettGui::getImageFolderPath() {
 }
 
 double SettGui::getlowTimeBetweenPopups() {
-	return(this->PopSett->TimeBetweenPopupsRangeSlider->get_low_value());
+	return(this->PopSett->TimeBetweenMultipopsRangeSlider->get_low_value());
 }
 
 double SettGui::gethighTimeBetweenPopups() {
-	return(this->PopSett->TimeBetweenPopupsRangeSlider->get_high_value());
+	return(this->PopSett->TimeBetweenMultipopsRangeSlider->get_high_value());
 }
 
 void SettGui::setMinXButtonHeight(int src) {
@@ -205,10 +205,6 @@ double SettGui::getlowPopupOpacity() {
 
 double SettGui::gethighPopupOpacity() {
 	return(this->PopSett->PopupOpacityRangeSlider->get_high_value());
-}
-
-int SettGui::getPopupOverlay() {
-	return(this->PopSett->Overlay->value());
 }
 
 int SettGui::getLoggingStrength() {
@@ -292,7 +288,6 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "highPopupFadeOutTime=" << Gui->gethighPopupFadeOutTime() << std::endl;
 	Settings << "lowPopupOpacity=" << Gui->getlowPopupOpacity() << std::endl;
 	Settings << "highPopupOpacity=" << Gui->gethighPopupOpacity() << std::endl;
-	Settings << "PopupOverlay=" << Gui->getPopupOverlay() << std::endl;
 	Settings << "LoggingStrength=" << Gui->getLoggingStrength() << std::endl;
 	Settings << "lowImageScale=" << Gui->gethighImageScale() << std::endl;
 	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
@@ -305,7 +300,7 @@ void save(Fl_Widget* win, void* Src) {
 		std::filesystem::rename(old, neww);
 		fl_choice("Trash location changed", "ok",0,0);
 	}
-	Gui->SettingsFileContent = ReadSettings(Gui->settingsFileLocation);
+	Gui->update(Gui->GetCurrentlyOpenPage());
 
 }
 

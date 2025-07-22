@@ -86,7 +86,6 @@ private:
 	int gethighPopupFadeOutTime();	
 	double getlowPopupOpacity();
 	double gethighPopupOpacity();
-	int getPopupOverlay();
 	int getLoggingStrength();
 	double getlowMultipop();
 	double gethighMultipop();

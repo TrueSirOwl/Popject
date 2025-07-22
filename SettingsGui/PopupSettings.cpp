@@ -71,12 +71,6 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->PopupOpacityRangeSlider->step(0.01);
 	this->PopupOpacityRangeSlider->tooltip("Sets the Opactity of the Popups");
 
-	
-	this->Overlay = new Fl_Check_Button(Opacityx, Opacityy + 20, 20, 20,"Overlay");
-	this->Overlay->value(this->SettingsFileContent->Overlay);
-	this->Overlay->align(FL_ALIGN_LEFT);
-	this->Overlay->tooltip("Makes Popups Overlays");
-
 	//this->PopupOpacityInput = new Fl_Value_Input(Opacityx);
 
 	//------------------------------------------------
@@ -96,7 +90,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	//------------------------------------------------
 
 	FolderPathx = 150;
-	FolderPathy = 190;
+	FolderPathy = 170;
 	FolderPathw = 0;
 	FolderPathh = 0;
 
@@ -104,37 +98,30 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->ImageFolderPath->value(this->SettingsFileContent->ImageFolderPath.c_str());
 	this->ImageFolderPath->tooltip("this is the path the program will get all its images from");
 	//------------------------------------------------
-
-	TimeBetweenx = 200;
-	TimeBetweeny = 170;
-	TimeBetweenw = 0;
-	TimeBetweenh = 0;
-
-	this->TimeBetweenPopupsRangeSlider = new RangeSlider(TimeBetweenx, TimeBetweeny, 200, 20, "TimeBetweenPopups", sett);
-	this->TimeBetweenPopupsRangeSlider->minimum(0);
-	this->TimeBetweenPopupsRangeSlider->maximum(10000);
-	this->TimeBetweenPopupsRangeSlider->step(1);
-	this->TimeBetweenPopupsRangeSlider->value(this->SettingsFileContent->lowTimeBetweenPopups, this->SettingsFileContent->highTimeBetweenPopups);
-	this->TimeBetweenPopupsRangeSlider->tooltip("Sets the time between Popups, Min time is always image loading time");
-	//------------------------------------------------
-
+	
 	Multipopx= 200;
-	Multipopy = 130;
-
+	Multipopy = 110;
+	
 	this->MultipopRangeSlider = new RangeSlider(Multipopx, Multipopy, 220, 20, "Multipop", sett);
 	this->MultipopRangeSlider->value(this->SettingsFileContent->lowMultipop, this->SettingsFileContent->highMultipop);
 	this->MultipopRangeSlider->minimum(1);
 	this->MultipopRangeSlider->maximum(100);
 	this->MultipopRangeSlider->step(1);
 	this->MultipopRangeSlider->tooltip("Sets Amount of Popups per activation");
-
+	
 	this->MultipopTimingRangeSlider = new RangeSlider(Multipopx, Multipopy + 20, 220, 20, "Multipop Timing", sett);
 	this->MultipopTimingRangeSlider->value(this->SettingsFileContent->lowMultipopTiming, this->SettingsFileContent->highMultipopTiming);
 	this->MultipopTimingRangeSlider->minimum(0);
-	this->MultipopTimingRangeSlider->maximum(1000);
+	this->MultipopTimingRangeSlider->maximum(10000);
 	this->MultipopTimingRangeSlider->step(1);
-	this->MultipopTimingRangeSlider->tooltip("Sets Timing between Popups in a multipop");
+	this->MultipopTimingRangeSlider->tooltip("Sets Timing between Popups in a multipop, Min time is always image loading time");
 
+	this->TimeBetweenMultipopsRangeSlider = new RangeSlider(Multipopx, Multipopy + 40, 200, 20, "time between multipops", sett);
+	this->TimeBetweenMultipopsRangeSlider->minimum(0);
+	this->TimeBetweenMultipopsRangeSlider->maximum(10000);
+	this->TimeBetweenMultipopsRangeSlider->step(1);
+	this->TimeBetweenMultipopsRangeSlider->value(this->SettingsFileContent->lowTimeBetweenPopups, this->SettingsFileContent->highTimeBetweenPopups);
+	this->TimeBetweenMultipopsRangeSlider->tooltip("Sets the time between multipops, Min time is always image loading time");
 
 //------------------------------------------------
 	ImageScalex = 200;
@@ -180,10 +167,10 @@ PopupSettings::~PopupSettings() {
 	delete (this->PopupFadeOutStepsRangeSlider);
 	delete (this->PopupFadeOutTimeRangeSlider);
 	delete (this->PopupOpacityRangeSlider);
-	delete (this->Overlay);
 	delete (this->PopupLifespanRangeSlider);
-	delete (this->TimeBetweenPopupsRangeSlider);
+	delete (this->TimeBetweenMultipopsRangeSlider);
 	delete (this->ImageFolderPath);
 	delete (this->MultipopRangeSlider);
+	delete (this->MultipopTimingRangeSlider);
 	delete (this->ImageScaleRangeSlider);
 }

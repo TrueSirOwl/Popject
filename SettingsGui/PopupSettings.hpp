@@ -42,15 +42,13 @@ public:
 	Fl_Check_Button* PopupLifespan;
 	RangeSlider* PopupLifespanRangeSlider;
 	//------------------------------------------------
-	int TimeBetweenx, TimeBetweeny, TimeBetweenw, TimeBetweenh;
-	RangeSlider* TimeBetweenPopupsRangeSlider;
-	//------------------------------------------------
 	int FolderPathx, FolderPathy, FolderPathw, FolderPathh;
 	Fl_Input* ImageFolderPath;
 	//------------------------------------------------
 	int Multipopx, Multipopy;
 	RangeSlider* MultipopRangeSlider;
 	RangeSlider* MultipopTimingRangeSlider;
+	RangeSlider* TimeBetweenMultipopsRangeSlider;
 	//------------------------------------------------
 	int ImageScalex, ImageScaley, ImageScalew, ImageScaleh;
 

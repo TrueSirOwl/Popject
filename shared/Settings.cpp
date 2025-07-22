@@ -44,7 +44,6 @@ Settings *ReadSettings(std::string loc) {
 		{"highPopupFadeOutTime", Setting::highPopupFadeOutTime},
 		{"lowPopupOpacity", Setting::lowPopupOpacity},
 		{"highPopupOpacity", Setting::highPopupOpacity},
-		{"PopupOverlay", Setting::Overlay},
 		{"LoggingStrength", Setting::LoggingStrength},
 		{"highImageScale",Setting::highImageScale},
 		{"lowImageScale", Setting::lowImageScale},
@@ -162,10 +161,6 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->highPopupOpacity = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::Overlay:
-		SettingsStruct->Overlay = std::stoi(line.substr(line.find('=') + 1, line.length()));
-		break;
-
 	case Setting::LoggingStrength:
 		SettingsStruct->LoggingStrenght = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -210,7 +205,6 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->MaxYButtonHeight = 100;
 	sett->MinXButtonHeight = 10;
 	sett->MinYButtonHeight = 10;
-	sett->Overlay = 1;
 	sett->PopupFadeOut = true;
 	sett->Range_slider_value_shoving = false;
 	sett->lowPopupFadeOutSteps = 100;

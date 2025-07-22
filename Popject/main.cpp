@@ -102,7 +102,6 @@ int main(int argc, char* argv[]) {
 		while (it != active.end()) {
 			(*it)->burst();
 			if ((*it)->checkBurstDone() == true) {
-				std::cout << "death" << std::endl;
 				delete (*it);
 				active.erase(it);
 			} else {
