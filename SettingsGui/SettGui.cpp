@@ -223,6 +223,14 @@ double SettGui::gethighMultipop() {
 	return(this->PopSett->MultipopRangeSlider->get_high_value());
 }
 
+double SettGui::gethighMultipopTiming() {
+	return(this->PopSett->MultipopTimingRangeSlider->get_high_value());
+}
+
+double SettGui::getlowMultipopTiming() {
+	return(this->PopSett->MultipopTimingRangeSlider->get_low_value());
+}
+
 double SettGui::gethighImageScale() {
 	return(this->PopSett->ImageScaleRangeSlider->get_low_value());
 }
@@ -275,6 +283,8 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "MaxYButtonHeight=" << Gui->getMaxYButtonHeight() << std::endl;
 	Settings << "lowMultipop=" << Gui->getlowMultipop() << std::endl;
 	Settings << "highMultipop=" << Gui->gethighMultipop() << std::endl;
+	Settings << "lowMultipopTiming=" << Gui->getlowMultipopTiming() << std::endl;
+	Settings << "highMultipopTiming=" << Gui->gethighMultipopTiming() << std::endl;
 	Settings << "PopupFadeOut=" << Gui->getPopupFadeOut() << std::endl;
 	Settings << "lowPopupFadeOutSteps=" << Gui->getlowPopupFadeOutSteps() << std::endl;
 	Settings << "highPopupFadeOutSteps=" << Gui->gethighPopupFadeOutSteps() << std::endl;

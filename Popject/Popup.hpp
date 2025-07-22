@@ -10,8 +10,7 @@
 #include "../shared/Settings.hpp"
 #include <thread>
 #include <mutex>
-#include <random>
-#include <chrono>
+#include "random.hpp"
 //#include "../shared/Debug.h"
 
 enum ContentType
@@ -59,11 +58,7 @@ private:
 	double fadeout_dimin_per_step;
 	double fadeout_step;
 
-	std::random_device rd;
-	std::mt19937::result_type seed;
 	std::mt19937 rng;
-
-	void create_rng();
 
 	void getImage();
 	void scale();
@@ -76,12 +71,13 @@ private:
 	void FadeOut();
 	void GifFadeout();
 	void setPopupFadeOutSteps();
-
+	
 	void SetWindowClickThrough();
-
+	
 	void PopupRemoval();
-
-public:
+	
+	public:
+	bool PrepFinished;
 	long long lifetime;
 
 	std::mutex CheckDeath;
@@ -90,7 +86,7 @@ public:
 	Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* window, SDL_Renderer* renderer);
 
 	void PopUp();
-	bool Prep();
+	bool Popup_prep();
 	//Popup(SDL_Surface image ,const Settings popsett);
 
 	~Popup();

@@ -35,6 +35,8 @@ Settings *ReadSettings(std::string loc) {
 		{"MaxYButtonHeight", Setting::MaxYButtonHeight},
 		{"lowMultipop", Setting::lowMultipop},
 		{"highMultipop", Setting::highMultipop},
+		{"lowMultipopTiming", Setting::lowMultipopTiming},
+		{"highMultipopTiming", Setting::highMultipopTiming},
 		{"PopupFadeOut", Setting::PopupFadeOut},
 		{"lowPopupFadeOutSteps", Setting::lowPopupFadeOutSteps},
 		{"highPopupFadeOutSteps", Setting::highPopupFadeOutSteps},
@@ -89,11 +91,11 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		break;
 
 	case Setting::lowPopupLifespan:
-		SettingsStruct->lowPopupLifespan = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		SettingsStruct->lowPopupLifespan = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::highPopupLifespan:
-		SettingsStruct->highPopupLifespan = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		SettingsStruct->highPopupLifespan = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::lowTimeBetweenPopups:
@@ -183,6 +185,14 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->TrashbinPath = line.substr(line.find('=') + 1, line.length());
 		break;
 
+	case Setting::lowMultipopTiming:
+		SettingsStruct->lowMultipopTiming = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::highMultipopTiming:
+		SettingsStruct->highMultipopTiming = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
 	default:
 		break;
 	}
@@ -216,4 +226,6 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->lowImageScale = 0.7;
 	sett->highImageScale = 1;
 	sett->TrashbinPath = "./Trash";
+	sett->lowMultipopTiming = 0;
+	sett->highMultipopTiming = 300;
 }

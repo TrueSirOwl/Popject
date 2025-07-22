@@ -96,7 +96,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	//------------------------------------------------
 
 	FolderPathx = 150;
-	FolderPathy = 170;
+	FolderPathy = 190;
 	FolderPathw = 0;
 	FolderPathh = 0;
 
@@ -106,7 +106,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	//------------------------------------------------
 
 	TimeBetweenx = 200;
-	TimeBetweeny = 150;
+	TimeBetweeny = 170;
 	TimeBetweenw = 0;
 	TimeBetweenh = 0;
 
@@ -127,6 +127,14 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->MultipopRangeSlider->maximum(100);
 	this->MultipopRangeSlider->step(1);
 	this->MultipopRangeSlider->tooltip("Sets Amount of Popups per activation");
+
+	this->MultipopTimingRangeSlider = new RangeSlider(Multipopx, Multipopy + 20, 220, 20, "Multipop Timing", sett);
+	this->MultipopTimingRangeSlider->value(this->SettingsFileContent->lowMultipopTiming, this->SettingsFileContent->highMultipopTiming);
+	this->MultipopTimingRangeSlider->minimum(0);
+	this->MultipopTimingRangeSlider->maximum(1000);
+	this->MultipopTimingRangeSlider->step(1);
+	this->MultipopTimingRangeSlider->tooltip("Sets Timing between Popups in a multipop");
+
 
 //------------------------------------------------
 	ImageScalex = 200;

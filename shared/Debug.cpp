@@ -14,7 +14,7 @@ void CreateLogFile() {
 	std::string time = "logs/Log_";
 	time.append(std::ctime(&runTime));
 	time.erase(time.find("\n"));
-	time.append(".hornylog");
+	time.append(".testlog");
 	std::replace(time.begin(), time.end(), ' ', '_');
 	std::replace(time.begin() + 2, time.end(), ':', '_');
 	Log = std::ofstream(time.c_str());

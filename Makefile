@@ -3,7 +3,7 @@ CXXFLAGS = -g3 -std=c++23 -Ishared
 
 PopSRC = Popject/main.cpp Popject/ImageStorage.cpp Popject/Popup.cpp Popject/Burster.cpp
 SettSRC = SettingsGui/ImagesSettings.cpp SettingsGui/RangeSlider.cpp SettingsGui/AdvancedSettings.cpp SettingsGui/GeneralSettings.cpp SettingsGui/PopupSettings.cpp SettingsGui/SettGui.cpp SettingsGui/Main.cpp
-SharedSRC = shared/Debug.cpp shared/Settings.cpp
+SharedSRC = shared/Debug.cpp shared/Settings.cpp shared/random.cpp
 
 
 SDL_CXXFLAGS = #$(shell sdl3-config --cflags)

@@ -33,7 +33,9 @@ enum Setting
 	Overlay,
 	lowImageScale,
 	highImageScale,
-	TrashbinPath
+	TrashbinPath,
+	lowMultipopTiming,
+	highMultipopTiming
 };
 
 
@@ -65,6 +67,8 @@ struct Settings
 	double lowImageScale;
 	double highImageScale;
 	std::string TrashbinPath;
+	double lowMultipopTiming;
+	double highMultipopTiming;
 };
 
 Settings*	ReadSettings(std::string str);

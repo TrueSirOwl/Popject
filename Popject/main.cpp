@@ -14,6 +14,7 @@
 #include "func.hpp"
 #include <queue>
 #include "Burster.hpp"
+#include "random.hpp"
 
 void SetWindowTopmost(SDL_Window* window);
 
@@ -63,20 +64,7 @@ int main(int argc, char* argv[]) {
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-	std::random_device rd;
-	std::mt19937::result_type seed;
-	std::mt19937 rng;
-
-	seed = rd() ^ (
-	(std::mt19937::result_type)
-	std::chrono::duration_cast<std::chrono::seconds>(
-		std::chrono::system_clock::now().time_since_epoch()
-		).count() +
-	(std::mt19937::result_type)
-	std::chrono::duration_cast<std::chrono::microseconds>(
-		std::chrono::high_resolution_clock::now().time_since_epoch()
-		).count() );
-	rng = std::mt19937(seed);
+	std::mt19937 rng = create_rng();
 
 	std::uniform_real_distribution<double> Time_Between_Popups_random_dist(Sett->lowTimeBetweenPopups, Sett->highTimeBetweenPopups);
 	double TimeBetweenPopups = Time_Between_Popups_random_dist(rng);
@@ -102,7 +90,7 @@ int main(int argc, char* argv[]) {
 		SetWindowTopmost(window);
 		SDL_RenderClear(renderer);
 		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > TimeBetweenPopups) {
-			if (preps.front()->prep() == true) {
+			if (preps.front()->burst_prep_check() == true) {
 				active.push_back(preps.front());
 				preps.pop();
 				preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
@@ -114,6 +102,7 @@ int main(int argc, char* argv[]) {
 		while (it != active.end()) {
 			(*it)->burst();
 			if ((*it)->checkBurstDone() == true) {
+				std::cout << "death" << std::endl;
 				delete (*it);
 				active.erase(it);
 			} else {
@@ -147,14 +136,16 @@ int main(int argc, char* argv[]) {
 #endif
 
 void SetWindowTopmost(SDL_Window* window) {
-    SDL_PropertiesID props = SDL_GetWindowProperties(window);
-    HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
-    if (hwnd) {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-    } else {
-        std::cerr << "Failed to get HWND from SDL window" << std::endl;
+#if defined(SDL_PLATFORM_WIN32)
+	SDL_PropertiesID props = SDL_GetWindowProperties(window);
+	HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+	if (hwnd) {
+		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+	} else {
+		std::cerr << "Failed to get HWND from SDL window" << std::endl;
 	SDL_Log("Failed to get HWND from SDL window");
-    }
+	}
+	#endif
 }
 
 void SetWindowClickThrough(SDL_Window* window) {

@@ -1,5 +1,6 @@
 #pragma once
 #include "Popup.hpp"
+#include "random.hpp"
 //#include <vector>
 //#include "../shared/Settings.h"
 
@@ -9,17 +10,23 @@ private:
 	std::vector<Popup*> burstBuffer;
 	ImageStorage IMGLib;
 
-	std::random_device rd;
-	std::mt19937::result_type seed;
 	std::mt19937 rng;
-	void create_rng();
 
 	int	BurstAmt;
 
+	std::vector<Popup*>::iterator Burst_iterator;
+
+	struct timeb last;
+	struct timeb now;
+
+	const Settings sett;
+
+	std::uniform_real_distribution<double> burst_random_timing;
+
 public:
-	Burster(ImageStorage& src, const Settings sett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer);
+	Burster(ImageStorage& src, const Settings _sett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer);
 	void burst();
-	bool prep();
+	bool burst_prep_check();
 	bool checkBurstDone();
 	~Burster();
 };

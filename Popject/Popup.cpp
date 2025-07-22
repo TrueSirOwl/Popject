@@ -3,7 +3,7 @@
 #include <SDL3/SDL_thread.h>
 
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
-sett(popsett), ImageLib(src), death(false), dispbounds(displays),
+sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(false),
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
 	create_rng();
 	this->start = {};
@@ -21,20 +21,7 @@ Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMA
 	this->fadeout_dimin_per_step = opacity_random_val / fadeout_steps_random_val;
 	this->fadeout_step = fadeout_time_random_val / fadeout_steps_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
-}
-
-
-void Popup::create_rng() {
-	seed = rd() ^ (
-	(std::mt19937::result_type)
-	std::chrono::duration_cast<std::chrono::seconds>(
-		std::chrono::system_clock::now().time_since_epoch()
-		).count() +
-	(std::mt19937::result_type)
-	std::chrono::duration_cast<std::chrono::microseconds>(
-		std::chrono::high_resolution_clock::now().time_since_epoch()
-		).count() );
-	rng = std::mt19937(seed);
+	rng = create_rng();
 }
 
 int Popup::getImageT(void* data) {
@@ -78,13 +65,14 @@ void Popup::place() {
 	this->target.y = WhereH(rng);
 }
 
-bool Popup::Prep() {
+bool Popup::Popup_prep() {
 	if (SDL_GetThreadState(this->sdl_loader) == SDL_THREAD_COMPLETE) {
 		SDL_WaitThread(this->sdl_loader,NULL);
 		this->sdl_loader = NULL;
 		//std::cout << "ready\n" << std::flush;
 	} else if (this->sdl_loader != NULL) {
 		//std::cout << "unready\n" << std::flush;
+		PrepFinished = false;
 		return (false);
 	}
 	scale();
@@ -103,6 +91,7 @@ bool Popup::Prep() {
 		SDL_ClearError();
 	}
 	SDL_SetTextureBlendMode(this->imageTexture, SDL_BLENDMODE_BLEND);
+	PrepFinished = true;
 	return (true);
 }
 

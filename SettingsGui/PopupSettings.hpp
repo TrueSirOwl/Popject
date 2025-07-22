@@ -49,8 +49,8 @@ public:
 	Fl_Input* ImageFolderPath;
 	//------------------------------------------------
 	int Multipopx, Multipopy;
-
 	RangeSlider* MultipopRangeSlider;
+	RangeSlider* MultipopTimingRangeSlider;
 	//------------------------------------------------
 	int ImageScalex, ImageScaley, ImageScalew, ImageScaleh;
 

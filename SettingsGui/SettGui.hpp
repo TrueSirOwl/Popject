@@ -90,6 +90,8 @@ private:
 	int getLoggingStrength();
 	double getlowMultipop();
 	double gethighMultipop();
+	double gethighMultipopTiming();
+	double getlowMultipopTiming();
 	double gethighImageScale();
 	double getlowImageScale();
 	const char* getTrashbinPath();
