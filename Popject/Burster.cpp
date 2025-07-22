@@ -13,7 +13,7 @@ Burster::Burster(ImageStorage& src, const Settings _sett, SDL_Rect* displays , S
 		burstBuffer.push_back(new Popup(IMGLib, sett, displays, wind, renderer));
 	}
 }
- 
+
 bool Burster::burst_prep_check() {
 	bool done = true;
 	std::vector<Popup*>::iterator it = burstBuffer.begin();
