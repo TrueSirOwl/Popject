@@ -33,34 +33,29 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->Fadew = 300;
 	this->Fadeh = 60;
 
-	this->PopupFadeOut = new Fl_Check_Button(Fadex, Fadey, 20, 20, "Fade Out");
-	this->PopupFadeOut->align(FL_ALIGN_LEFT);
-	this->PopupFadeOut->value(this->SettingsFileContent->PopupFadeOut);
-	this->PopupFadeOut->tooltip("Enables Popup Fadeout after Lifetime runs out");
-	this->PopupFadeOut->callback(ActivateFadeout, this);
-
-	this->PopupFadeOutStepsRangeSlider = new RangeSlider(Fadex, Fadey+20, 220, 20, "Steps", sett);
+	this->PopupFadeOutStepsRangeSlider = new RangeSlider(Fadex, Fadey, 220, 20, "Fade Steps", sett);
 	this->PopupFadeOutStepsRangeSlider->value(this->SettingsFileContent->lowPopupFadeOutSteps, this->SettingsFileContent->highPopupFadeOutSteps);
 	this->PopupFadeOutStepsRangeSlider->tooltip("Sets the amount of Steps the Fade out takes to dissapear (one step takes one time");
 	this->PopupFadeOutStepsRangeSlider->step(1);
 	this->PopupFadeOutStepsRangeSlider->maximum(5000);
 	this->PopupFadeOutStepsRangeSlider->minimum(10);
 
-	this->PopupFadeOutTimeRangeSlider = new RangeSlider(Fadex, Fadey+40, 220, 20, "Time", sett);
+	this->PopupFadeOutTimeRangeSlider = new RangeSlider(Fadex, Fadey+20, 220, 20, "Fade out Time", sett);
 	this->PopupFadeOutTimeRangeSlider->value(this->SettingsFileContent->lowPopupFadeOutTime,this->SettingsFileContent->highPopupFadeOutTime);
 	this->PopupFadeOutTimeRangeSlider->tooltip("Sets the time the Fade out takes");
 	this->PopupFadeOutTimeRangeSlider->step(1);
 	this->PopupFadeOutTimeRangeSlider->maximum(10000);
-	this->PopupFadeOutTimeRangeSlider->minimum(100);
+	this->PopupFadeOutTimeRangeSlider->minimum(0);
 
-
-	if (this->PopupFadeOut->value() == 0) {
-		this->PopupFadeOutTimeRangeSlider->deactivate();
-		this->PopupFadeOutStepsRangeSlider->deactivate();
-	}
+	this->PopupFadeInTimeRangeSlider = new RangeSlider(Fadex, Fadey+40, 220, 20, "Fade in Time", sett);
+	this->PopupFadeInTimeRangeSlider->value(this->SettingsFileContent->lowPopupFadeInTime,this->SettingsFileContent->highPopupFadeInTime);
+	this->PopupFadeInTimeRangeSlider->tooltip("Sets the time the Fade in takes");
+	this->PopupFadeInTimeRangeSlider->step(1);
+	this->PopupFadeInTimeRangeSlider->maximum(10000);
+	this->PopupFadeInTimeRangeSlider->minimum(0);
 	//------------------------------------------------
 	Opacityx = 200;
-	Opacityy = 90;
+	Opacityy = 70;
 	Opacityw = 0;
 	Opacityh = 0;
 
@@ -76,7 +71,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	//------------------------------------------------
 
 	Lifespanx = 200;
-	Lifespany = 70;
+	Lifespany = 90;
 	Lifespanw = 0;
 	Lifespanh = 0;
 
@@ -89,16 +84,6 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 
 	//------------------------------------------------
 
-	FolderPathx = 150;
-	FolderPathy = 170;
-	FolderPathw = 0;
-	FolderPathh = 0;
-
-	this->ImageFolderPath = new Fl_Input(FolderPathx, FolderPathy, 700, 20, "Image Folder Path");
-	this->ImageFolderPath->value(this->SettingsFileContent->ImageFolderPath.c_str());
-	this->ImageFolderPath->tooltip("this is the path the program will get all its images from");
-	//------------------------------------------------
-	
 	Multipopx= 200;
 	Multipopy = 110;
 	
@@ -124,6 +109,16 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->TimeBetweenMultipopsRangeSlider->tooltip("Sets the time between multipops, Min time is always image loading time");
 
 //------------------------------------------------
+	FolderPathx = 150;
+	FolderPathy = 170;
+	FolderPathw = 0;
+	FolderPathh = 0;
+
+	this->ImageFolderPath = new Fl_Input(FolderPathx, FolderPathy, 700, 20, "Image Folder Path");
+	this->ImageFolderPath->value(this->SettingsFileContent->ImageFolderPath.c_str());
+	this->ImageFolderPath->tooltip("this is the path the program will get all its images from");
+	//------------------------------------------------
+	
 	ImageScalex = 200;
 	ImageScaley = 400;
 	ImageScalew = 0;
@@ -146,26 +141,13 @@ void PopupSettings::ResizeButtonTextField(Fl_Widget* w, void* data) {
 	Gui->redraw();
 }
 
-
-void PopupSettings::ActivateFadeout(Fl_Widget* w, void* data) {
-	PopupSettings* Gui = static_cast<PopupSettings*>(data);
-	if (Gui->PopupFadeOut->value() == 0) {
-		Gui->PopupFadeOutTimeRangeSlider->deactivate();
-		Gui->PopupFadeOutStepsRangeSlider->deactivate();
-	}
-	else {
-		Gui->PopupFadeOutTimeRangeSlider->activate();
-		Gui->PopupFadeOutStepsRangeSlider->activate();
-	}
-}
-
 PopupSettings::~PopupSettings() {
 	delete (this->ButtonXinput);
 	delete (this->ButtonYinput);
 	delete (this->ButtonTextInput);
-	delete (this->PopupFadeOut);
 	delete (this->PopupFadeOutStepsRangeSlider);
 	delete (this->PopupFadeOutTimeRangeSlider);
+	delete (this->PopupFadeInTimeRangeSlider);
 	delete (this->PopupOpacityRangeSlider);
 	delete (this->PopupLifespanRangeSlider);
 	delete (this->TimeBetweenMultipopsRangeSlider);

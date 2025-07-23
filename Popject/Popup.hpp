@@ -53,10 +53,16 @@ private:
 
 	double opacity_random_val;
 
-	double fadeout_steps_random_val;
+	double fade_steps_random_val;
 	double fadeout_time_random_val;
+	double fadein_time_random_val;
 	double fadeout_dimin_per_step;
+	double fadein_increase_per_step;
 	double fadeout_step;
+	double fadein_step;
+	double fadein_opacity;
+
+	bool fadein_done;
 
 	std::mt19937 rng;
 
@@ -65,10 +71,12 @@ private:
 	void place();
 	static int getImageT(void* data);
 	void renderImage();
-	void renderGif();
+	void renderGif(double opacity);
 	void DoImage();
 	void DoGIF();
+	void FadeIn();
 	void FadeOut();
+	void GifFadein();
 	void GifFadeout();
 	void setPopupFadeOutSteps();
 	

@@ -37,11 +37,12 @@ Settings *ReadSettings(std::string loc) {
 		{"highMultipop", Setting::highMultipop},
 		{"lowMultipopTiming", Setting::lowMultipopTiming},
 		{"highMultipopTiming", Setting::highMultipopTiming},
-		{"PopupFadeOut", Setting::PopupFadeOut},
 		{"lowPopupFadeOutSteps", Setting::lowPopupFadeOutSteps},
 		{"highPopupFadeOutSteps", Setting::highPopupFadeOutSteps},
 		{"lowPopupFadeOutTime", Setting::lowPopupFadeOutTime},
 		{"highPopupFadeOutTime", Setting::highPopupFadeOutTime},
+		{"lowPopupFadeInTime", Setting::lowPopupFadeInTime},
+		{"highPopupFadeInTime", Setting::highPopupFadeInTime},
 		{"lowPopupOpacity", Setting::lowPopupOpacity},
 		{"highPopupOpacity", Setting::highPopupOpacity},
 		{"LoggingStrength", Setting::LoggingStrength},
@@ -133,10 +134,6 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->highMultipop = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
-	case Setting::PopupFadeOut:
-		SettingsStruct->PopupFadeOut = std::stoi(line.substr(line.find('=') + 1, line.length()));
-		break;
-
 	case Setting::lowPopupFadeOutSteps:
 		SettingsStruct->lowPopupFadeOutSteps = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -146,11 +143,19 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		break;
 
 	case Setting::lowPopupFadeOutTime:
-		SettingsStruct->lowPopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		SettingsStruct->lowPopupFadeOutTime = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::highPopupFadeOutTime:
-		SettingsStruct->highPopupFadeOutTime = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		SettingsStruct->highPopupFadeOutTime = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::lowPopupFadeInTime:
+		SettingsStruct->lowPopupFadeInTime = std::stod(line.substr(line.find('=') + 1, line.length()));
+		break;
+
+	case Setting::highPopupFadeInTime:
+		SettingsStruct->highPopupFadeInTime = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::lowPopupOpacity:
@@ -205,12 +210,13 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->MaxYButtonHeight = 100;
 	sett->MinXButtonHeight = 10;
 	sett->MinYButtonHeight = 10;
-	sett->PopupFadeOut = true;
 	sett->Range_slider_value_shoving = false;
 	sett->lowPopupFadeOutSteps = 100;
 	sett->highPopupFadeOutSteps = 1000;
 	sett->lowPopupFadeOutTime = 1000;
 	sett->highPopupFadeOutTime = 5000;
+	sett->lowPopupFadeOutTime = 100;
+	sett->highPopupFadeOutTime = 1000;
 	sett->lowPopupLifespan = 10000;
 	sett->highPopupLifespan = 10000;
 	sett->lowPopupOpacity = 0.20;

@@ -79,7 +79,6 @@ private:
 	int getMaxYButtonHeight();
 	void setMaxYButtonHeight(int src);
 	int getRange_slider_value_shoving();
-	int getPopupFadeOut();
 	double gethighPopupFadeOutSteps();
 	double getlowPopupFadeOutSteps();
 	int getlowPopupFadeOutTime();
@@ -94,6 +93,8 @@ private:
 	double gethighImageScale();
 	double getlowImageScale();
 	const char* getTrashbinPath();
+	double getlowPopupFadeInTime();
+	double gethighPopupFadeInTime();
 };
 
 void Close(Fl_Widget* win, void* Src);

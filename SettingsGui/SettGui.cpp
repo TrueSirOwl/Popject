@@ -179,10 +179,6 @@ int SettGui::getRange_slider_value_shoving() {
 	return(this->AdvSett->range_slider_value_shoving->value());
 }
 
-int SettGui::getPopupFadeOut() {
-	return(this->PopSett->PopupFadeOut->value());
-}
-
 double SettGui::gethighPopupFadeOutSteps() {
 	return(this->PopSett->PopupFadeOutStepsRangeSlider->get_high_value());
 }
@@ -197,6 +193,14 @@ int SettGui::getlowPopupFadeOutTime() {
 
 int SettGui::gethighPopupFadeOutTime() {
 	return(this->PopSett->PopupFadeOutTimeRangeSlider->get_high_value());
+}
+
+double SettGui::getlowPopupFadeInTime() {
+	return(this->PopSett->PopupFadeInTimeRangeSlider->get_low_value());
+}
+
+double SettGui::gethighPopupFadeInTime() {
+	return(this->PopSett->PopupFadeInTimeRangeSlider->get_high_value());
 }
 
 double SettGui::getlowPopupOpacity() {
@@ -238,6 +242,7 @@ double SettGui::getlowImageScale() {
 const char* SettGui::getTrashbinPath() {
 	return(this->AdvSett->TrashbinPath->value());
 }
+
 
 void Close(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
@@ -281,11 +286,12 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "highMultipop=" << Gui->gethighMultipop() << std::endl;
 	Settings << "lowMultipopTiming=" << Gui->getlowMultipopTiming() << std::endl;
 	Settings << "highMultipopTiming=" << Gui->gethighMultipopTiming() << std::endl;
-	Settings << "PopupFadeOut=" << Gui->getPopupFadeOut() << std::endl;
 	Settings << "lowPopupFadeOutSteps=" << Gui->getlowPopupFadeOutSteps() << std::endl;
 	Settings << "highPopupFadeOutSteps=" << Gui->gethighPopupFadeOutSteps() << std::endl;
 	Settings << "lowPopupFadeOutTime=" << Gui->getlowPopupFadeOutTime() << std::endl;
 	Settings << "highPopupFadeOutTime=" << Gui->gethighPopupFadeOutTime() << std::endl;
+	Settings << "lowPopupFadeInTime=" << Gui->getlowPopupFadeInTime() << std::endl;
+	Settings << "highPopupFadeInTime=" << Gui->gethighPopupFadeInTime() << std::endl;
 	Settings << "lowPopupOpacity=" << Gui->getlowPopupOpacity() << std::endl;
 	Settings << "highPopupOpacity=" << Gui->gethighPopupOpacity() << std::endl;
 	Settings << "LoggingStrength=" << Gui->getLoggingStrength() << std::endl;

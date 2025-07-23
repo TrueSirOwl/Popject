@@ -3,23 +3,27 @@
 #include <SDL3/SDL_thread.h>
 
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
-sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(false),
+sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(false), fadein_done(false), fadein_opacity(0),
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
 	create_rng();
 	this->start = {};
 	this->middle = {};
 	std::uniform_real_distribution<double> fadeout_steps_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
 	std::uniform_real_distribution<double> fadeout_time_random_dist(this->sett.lowPopupFadeOutTime, this->sett.highPopupFadeOutTime);
+	std::uniform_real_distribution<double> fadein_time_random_dist(this->sett.lowPopupFadeInTime, this->sett.highPopupFadeInTime);
 	std::uniform_real_distribution<double> opacity_random_dist(this->sett.lowPopupOpacity, this->sett.highPopupOpacity);
 	std::uniform_real_distribution<double> lifespan_random_dist(this->sett.lowPopupLifespan, this->sett.highPopupLifespan);
 
-	fadeout_steps_random_val = fadeout_steps_random_dist(rng);
+	fade_steps_random_val = fadeout_steps_random_dist(rng);
 	fadeout_time_random_val = fadeout_time_random_dist(rng);
+	fadein_time_random_val = fadein_time_random_dist(rng);
 	opacity_random_val = opacity_random_dist(rng);
 	lifetime = lifespan_random_dist(rng);
 
-	this->fadeout_dimin_per_step = opacity_random_val / fadeout_steps_random_val;
-	this->fadeout_step = fadeout_time_random_val / fadeout_steps_random_val;
+	this->fadeout_dimin_per_step = opacity_random_val / fade_steps_random_val;
+	this->fadein_increase_per_step = opacity_random_val / fade_steps_random_val;
+	this->fadeout_step = fadeout_time_random_val / fade_steps_random_val;
+	this->fadein_step = fadein_time_random_val / fade_steps_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
 	rng = create_rng();
 }
@@ -98,6 +102,7 @@ bool Popup::Popup_prep() {
 void Popup::PopUp() {
 	if (start.time == 0 && start.millitm == 0) {
 		ftime(&start);
+		middle = start;
 	}
 
 	switch (this->Content) {
@@ -113,30 +118,42 @@ void Popup::PopUp() {
 }
 
 void Popup::DoGIF() {
-	struct timeb now;
-	ftime(&now);
-	if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) > this->lifetime) {
-		if (this->sett.PopupFadeOut == true) {
+	if (this->fadein_done == false) {
+		GifFadein();
+	} else {
+		if (start.time == 0 && start.millitm == 0) {
+			ftime(&start);
+		}
+		struct timeb now;
+		ftime(&now);
+		if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) < this->lifetime) {
+			renderGif(opacity_random_val);
+			ftime(&middle);
+		} else {
 			GifFadeout();
 		}
-	} else {
-		renderGif();
 	}
 }
 
 void Popup::DoImage() {
-	struct timeb now;
-	ftime(&now);
-	if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) > this->lifetime) {
-		if (this->sett.PopupFadeOut == true) {
+	if (this->fadein_done == false) {
+		FadeIn();
+	} else {
+		if (start.time == 0 && start.millitm == 0) {
+			ftime(&start);
+		}
+		struct timeb now;
+		ftime(&now);
+		if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) < this->lifetime) {
+			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
+			ftime(&middle);
+		} else {
 			FadeOut();
 		}
-	} else {
-		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 	}
 }
 
-void Popup::renderGif() {
+void Popup::renderGif(double opacity) {
 	struct timeb now;
 	ftime(&now);
 	if (this->Current_image >= Gif->count) {
@@ -149,13 +166,33 @@ void Popup::renderGif() {
 		}
 		this->imageTexture = SDL_CreateTextureFromSurface(this->PopupRenderer, Gif->frames[this->Current_image++]);
 		SDL_SetTextureBlendMode(this->imageTexture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
+		SDL_SetTextureAlphaMod(this->imageTexture, opacity * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 		this->last_image = (long long)now.time * 1000 + now.millitm;
 	} else {
-		SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
+		SDL_SetTextureAlphaMod(this->imageTexture, opacity * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 	}
+}
+
+void Popup::GifFadein() {
+	struct timeb middle1;
+
+	ftime(&middle1);
+
+	if (fadein_opacity < opacity_random_val) {
+		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadein_step) {
+			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadein_step);
+			fadein_opacity += fadein_increase_per_step * stepmult;
+			if (fadein_opacity > opacity_random_val) {
+				fadein_opacity = opacity_random_val;
+			}
+			middle = middle1;
+		}
+	} else {
+		this->fadein_done = true;
+	}
+	renderGif(fadein_opacity);
 }
 
 void Popup::GifFadeout() {
@@ -166,21 +203,36 @@ void Popup::GifFadeout() {
 	if (opacity_random_val != 0) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
 			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
-			if (stepmult > 10000) {
-				stepmult = 1;
-			}
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			if (opacity_random_val < 0) {
 				opacity_random_val = 0;
 			}
-			renderGif();
 			middle = middle1;
-		} else {
-			renderGif();
 		}
 	} else {
 		this->death = true;
 	}
+	renderGif(opacity_random_val);
+}
+
+void Popup::FadeIn() {
+	struct timeb middle1;
+
+	ftime(&middle1);
+	if (fadein_opacity < opacity_random_val) {
+		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadein_step) {
+			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadein_step);
+			fadein_opacity += fadein_increase_per_step * stepmult;
+			if (fadein_opacity > opacity_random_val) {
+				fadein_opacity = opacity_random_val;
+			}
+			middle = middle1;
+		}
+	} else {
+		this->fadein_done = true;
+	}
+	SDL_SetTextureAlphaMod(this->imageTexture, fadein_opacity * 255);
+	SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 }
 
 void Popup::FadeOut() {
@@ -191,22 +243,17 @@ void Popup::FadeOut() {
 	if (opacity_random_val != 0) {
 		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
 			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
-			if (stepmult > 10000) {
-				stepmult = 1;
-			}
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			if (opacity_random_val < 0) {
 				opacity_random_val = 0;
 			}
-			SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
-			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 			middle = middle1;
-		} else {
-			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 		}
 	} else {
 		this->death = true;
 	}
+	SDL_SetTextureAlphaMod(this->imageTexture, opacity_random_val * 255);
+	SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
 }
 
 void Popup::PopupRemoval() {

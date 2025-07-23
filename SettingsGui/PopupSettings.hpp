@@ -30,9 +30,9 @@ public:
 	Fl_Input* ButtonTextInput;
 	//------------------------------------------------
 	int Fadex, Fadey, Fadew, Fadeh;
-	Fl_Check_Button* PopupFadeOut;
 	RangeSlider* PopupFadeOutStepsRangeSlider;
 	RangeSlider* PopupFadeOutTimeRangeSlider;
+	RangeSlider* PopupFadeInTimeRangeSlider;
 	//------------------------------------------------
 	int Opacityx, Opacityy, Opacityw, Opacityh;
 	RangeSlider* PopupOpacityRangeSlider;

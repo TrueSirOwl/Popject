@@ -21,12 +21,13 @@ enum Setting
 	MaxYButtonHeight,
 	lowMultipop,
 	highMultipop,
-	PopupFadeOut,
-	Range_slider_value_shoving,
 	lowPopupFadeOutSteps,
 	highPopupFadeOutSteps,
 	lowPopupFadeOutTime,
 	highPopupFadeOutTime,
+	lowPopupFadeInTime,
+	highPopupFadeInTime,
+	Range_slider_value_shoving,
 	lowPopupOpacity,
 	highPopupOpacity,
 	LoggingStrength,
@@ -38,8 +39,7 @@ enum Setting
 };
 
 
-struct Settings
-{
+struct Settings {
 	int ButtonX, ButtonY;
 	std::string ButtonText;
 	double lowPopupLifespan;
@@ -53,12 +53,13 @@ struct Settings
 	int MaxYButtonHeight;
 	double lowMultipop;
 	double highMultipop;
-	bool PopupFadeOut;
 	bool Range_slider_value_shoving;
 	double lowPopupFadeOutSteps;
 	double highPopupFadeOutSteps;
 	double lowPopupFadeOutTime;
 	double highPopupFadeOutTime;
+	double lowPopupFadeInTime;
+	double highPopupFadeInTime;
 	double lowPopupOpacity;
 	double highPopupOpacity;
 	int LoggingStrenght;
