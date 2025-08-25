@@ -3,6 +3,7 @@
 #include "ImageStorage.hpp"
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3/SDL_time.h>
 #include <vector>
 #include <ctime>
 #include <sys/timeb.h>
@@ -48,8 +49,8 @@ private:
 
 	ContentType Content;
 
-	struct timeb start;
-	struct timeb middle;
+	SDL_Time start;
+	SDL_Time end;
 
 	double opacity_random_val;
 

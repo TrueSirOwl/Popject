@@ -7,7 +7,7 @@ sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(f
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
 	create_rng();
 	this->start = {};
-	this->middle = {};
+	this->end = {};
 	std::uniform_real_distribution<double> fadeout_steps_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
 	std::uniform_real_distribution<double> fadeout_time_random_dist(this->sett.lowPopupFadeOutTime, this->sett.highPopupFadeOutTime);
 	std::uniform_real_distribution<double> fadein_time_random_dist(this->sett.lowPopupFadeInTime, this->sett.highPopupFadeInTime);
@@ -100,9 +100,9 @@ bool Popup::Popup_prep() {
 }
 
 void Popup::PopUp() {
-	if (start.time == 0 && start.millitm == 0) {
-		ftime(&start);
-		middle = start;
+	if (start == 0) {
+		SDL_GetCurrentTime(&start);
+		end = start;
 	}
 
 	switch (this->Content) {
@@ -121,14 +121,14 @@ void Popup::DoGIF() {
 	if (this->fadein_done == false) {
 		GifFadein();
 	} else {
-		if (start.time == 0 && start.millitm == 0) {
-			ftime(&start);
+		if (start == 0) {
+			SDL_GetCurrentTime(&start);
 		}
-		struct timeb now;
-		ftime(&now);
-		if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) < this->lifetime) {
+		SDL_Time now;
+		SDL_GetCurrentTime(&now);
+		if (SDL_NS_TO_MS(now) - SDL_NS_TO_MS(start) < this->lifetime) {
 			renderGif(opacity_random_val);
-			ftime(&middle);
+			SDL_GetCurrentTime(&end);
 		} else {
 			GifFadeout();
 		}
@@ -139,14 +139,15 @@ void Popup::DoImage() {
 	if (this->fadein_done == false) {
 		FadeIn();
 	} else {
-		if (start.time == 0 && start.millitm == 0) {
-			ftime(&start);
+		if (start == 0) {
+			SDL_GetCurrentTime(&start);
+
 		}
-		struct timeb now;
-		ftime(&now);
-		if (((long long)now.time * 1000 + now.millitm) - ((long long)start.time * 1000 + start.millitm) < this->lifetime) {
+		SDL_Time now;
+		SDL_GetCurrentTime(&now);
+		if (SDL_NS_TO_MS(now) - SDL_NS_TO_MS(start) < this->lifetime) {
 			SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
-			ftime(&middle);
+			SDL_GetCurrentTime(&end);
 		} else {
 			FadeOut();
 		}
@@ -154,12 +155,12 @@ void Popup::DoImage() {
 }
 
 void Popup::renderGif(double opacity) {
-	struct timeb now;
-	ftime(&now);
+	SDL_Time now;
+	SDL_GetCurrentTime(&now);
 	if (this->Current_image >= Gif->count) {
 		this->Current_image = 0;
 	}
-	if (((long long)now.time * 1000 + now.millitm) - this->last_image >= Gif->delays[this->Current_image]) {
+	if (SDL_NS_TO_MS(now) - this->last_image >= Gif->delays[this->Current_image]) {
 		if (this->imageTexture != NULL) {
 			SDL_DestroyTexture(this->imageTexture);
 			this->imageTexture = NULL;
@@ -168,7 +169,7 @@ void Popup::renderGif(double opacity) {
 		SDL_SetTextureBlendMode(this->imageTexture, SDL_BLENDMODE_BLEND);
 		SDL_SetTextureAlphaMod(this->imageTexture, opacity * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
-		this->last_image = (long long)now.time * 1000 + now.millitm;
+		this->last_image = SDL_NS_TO_MS(now);
 	} else {
 		SDL_SetTextureAlphaMod(this->imageTexture, opacity * 255);
 		SDL_RenderTexture(this->PopupRenderer, this->imageTexture, NULL, &this->target);
@@ -176,18 +177,18 @@ void Popup::renderGif(double opacity) {
 }
 
 void Popup::GifFadein() {
-	struct timeb middle1;
+	SDL_Time middle;
 
-	ftime(&middle1);
+	SDL_GetCurrentTime(&middle);
 
 	if (fadein_opacity < opacity_random_val) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadein_step) {
-			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadein_step);
+		if (SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end) >= fadein_step) {
+			double stepmult = ((SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end)) / fadein_step);
 			fadein_opacity += fadein_increase_per_step * stepmult;
 			if (fadein_opacity > opacity_random_val) {
 				fadein_opacity = opacity_random_val;
 			}
-			middle = middle1;
+			end = middle;
 		}
 	} else {
 		this->fadein_done = true;
@@ -196,18 +197,18 @@ void Popup::GifFadein() {
 }
 
 void Popup::GifFadeout() {
-	struct timeb middle1;
+	SDL_Time middle;
 
-	ftime(&middle1);
+	SDL_GetCurrentTime(&middle);
 
 	if (opacity_random_val != 0) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
+		if (SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end) >= fadeout_step) {
+			double stepmult = ((SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end)) / fadeout_step);
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			if (opacity_random_val < 0) {
 				opacity_random_val = 0;
 			}
-			middle = middle1;
+			end = middle;
 		}
 	} else {
 		this->death = true;
@@ -216,17 +217,17 @@ void Popup::GifFadeout() {
 }
 
 void Popup::FadeIn() {
-	struct timeb middle1;
+	SDL_Time middle;
 
-	ftime(&middle1);
+	SDL_GetCurrentTime(&middle);
 	if (fadein_opacity < opacity_random_val) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadein_step) {
-			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadein_step);
+		if (SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end) >= fadein_step) {
+			double stepmult = ((SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end)) / fadein_step);
 			fadein_opacity += fadein_increase_per_step * stepmult;
 			if (fadein_opacity > opacity_random_val) {
 				fadein_opacity = opacity_random_val;
 			}
-			middle = middle1;
+			end = middle;
 		}
 	} else {
 		this->fadein_done = true;
@@ -236,18 +237,17 @@ void Popup::FadeIn() {
 }
 
 void Popup::FadeOut() {
-	struct timeb middle1;
+	SDL_Time middle;
 
-	ftime(&middle1);
-
+	SDL_GetCurrentTime(&middle);
 	if (opacity_random_val != 0) {
-		if ((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm) >= fadeout_step) {
-			double stepmult = (((middle1.time * 1000 + middle1.millitm) - (middle.time * 1000 + middle.millitm)) / fadeout_step);
+		if (SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end) >= fadeout_step) {
+			double stepmult = ((SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end)) / fadeout_step);
 			opacity_random_val -= fadeout_dimin_per_step * stepmult;
 			if (opacity_random_val < 0) {
 				opacity_random_val = 0;
 			}
-			middle = middle1;
+			end = middle;
 		}
 	} else {
 		this->death = true;
