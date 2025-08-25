@@ -80,21 +80,22 @@ int main(int argc, char* argv[]) {
 	preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
 	preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
 
-	timeb start;
-	timeb end {};
+	SDL_Time start;
+	SDL_Time end = 0;
 	SDL_Event event;
 
-	ftime(&start);
+	SDL_GetCurrentTime(&start);
+
 	while (true) {
 		if (SDL_PollEvent(&event)) {}
 		SetWindowTopmost(window);
 		SDL_RenderClear(renderer);
-		if (((long long)end.time * 1000 + end.millitm) - ((long long)start.time * 1000 + start.millitm) > TimeBetweenPopups) {
+		if (SDL_NS_TO_MS(end) - SDL_NS_TO_MS(start) > TimeBetweenPopups) {
 			if (preps.front()->burst_prep_check() == true) {
 				active.push_back(preps.front());
 				preps.pop();
 				preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
-				ftime(&start);
+				SDL_GetCurrentTime(&start);
 			}
 		}
 
@@ -109,7 +110,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		SDL_RenderPresent(renderer);
-		ftime(&end);
+		SDL_GetCurrentTime(&end);
 	}
 
 	// cleanup

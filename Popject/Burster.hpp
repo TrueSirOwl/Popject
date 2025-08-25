@@ -16,8 +16,8 @@ private:
 
 	std::vector<Popup*>::iterator Burst_iterator;
 
-	struct timeb last;
-	struct timeb now;
+	SDL_Time last;
+	SDL_Time now;
 
 	const Settings sett;
 

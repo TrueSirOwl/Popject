@@ -24,15 +24,15 @@ bool Burster::burst_prep_check() {
 	}
 	if (done == true) {
 		this->Burst_iterator = burstBuffer.begin();
-		ftime(&last);
+		SDL_GetCurrentTime(&last);
 	}
 	return (done);
 }
 
 void Burster::burst() {
-	ftime(&now);
+	SDL_GetCurrentTime(&now);
 	std::vector<Popup*>::iterator it = burstBuffer.begin();
-	if ((now.time * 1000 + now.millitm) - (last.time * 1000 + last.millitm) > burst_random_timing(rng)) {
+	if (SDL_NS_TO_MS(now) - SDL_NS_TO_MS(last) > burst_random_timing(rng)) {
 		if (Burst_iterator != burstBuffer.end()) {
 			++Burst_iterator;
 			last = now;
