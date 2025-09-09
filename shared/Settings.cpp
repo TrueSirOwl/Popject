@@ -17,7 +17,7 @@ Settings *ReadSettings(std::string loc) {
 			exit(1);
 		}
 	} else {
-		std::cout << "Standard settings file opened" << std::endl;
+		std::cout << "Setting file at: " << loc << " opened!" << std::endl;
 	}
 	const std::map<std::string, Setting> lineToEnumMap = {
 		{"ButtonX", Setting::ButtonX},
@@ -48,7 +48,8 @@ Settings *ReadSettings(std::string loc) {
 		{"LoggingStrength", Setting::LoggingStrength},
 		{"highImageScale",Setting::highImageScale},
 		{"lowImageScale", Setting::lowImageScale},
-		{"TrashbinPath", Setting::TrashbinPath}
+		{"TrashbinPath", Setting::TrashbinPath},
+		{"SettingsFilePath", Setting::SettingsFilePath}
 	};
 	int settingsDone = 0;
 	while (std::getline(setting, line)) {
@@ -185,6 +186,10 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->TrashbinPath = line.substr(line.find('=') + 1, line.length());
 		break;
 
+	case Setting::SettingsFilePath:
+		SettingsStruct->SettingsFilePath = line.substr(line.find('=') + 1, line.length());
+		break;
+
 	case Setting::lowMultipopTiming:
 		SettingsStruct->lowMultipopTiming = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -226,6 +231,7 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->lowImageScale = 0.7;
 	sett->highImageScale = 1;
 	sett->TrashbinPath = "./Trash";
+	sett->SettingsFilePath = "./shared/Settings.txt";
 	sett->lowMultipopTiming = 0;
 	sett->highMultipopTiming = 300;
 }

@@ -12,7 +12,7 @@ SettGui::SettGui(std::string loc) : W(std::min(900,Fl::w())), H(std::min(800,Fl:
 	this->saveButton = new Fl_Button(0,H-20,W,20,"Save");
 	this->saveButton->callback(save, this);
 	this->BuildMenueSelectorPanel(this->SelectorPanelButtonNames);
-	this->GenSett = new GeneralSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
+	this->GenSett = new GeneralSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent, this);
 	Gui->add(GenSett);
 	this->PopSett = new PopupSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
 	Gui->add(PopSett);
@@ -31,7 +31,7 @@ void SettGui::update(int CurrentlyOpenPageNum)
 	delete (this->SettingsFileContent);
 	this->SettingsFileContent = ReadSettings(settingsFileLocation);
 	delete(this->GenSett);
-	this->GenSett = new GeneralSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
+	this->GenSett = new GeneralSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent, this);
 	Gui->add(GenSett);
 	delete(this->PopSett);
 	this->PopSett = new PopupSettings(2, 2 + SelectorButtonH, W - 4, H - SelectorButtonH - 24, this->SettingsFileContent);
@@ -243,6 +243,9 @@ const char* SettGui::getTrashbinPath() {
 	return(this->AdvSett->TrashbinPath->value());
 }
 
+const char* SettGui::getSettingsPath() {
+	return(this->GenSett->SettingsPath->value());
+}
 
 void Close(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
@@ -266,9 +269,10 @@ void Close(Fl_Widget* win, void* Src) {
 
 void save(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
-	std::ofstream Settings("shared/Settings.txt");
+	std::ofstream Settings(Gui->settingsFileLocation);
+	std::cout << Gui->getSettingsPath() << std::endl;
 	if (Settings.is_open() == false) {
-		std::cout << "error could not open Settings File" << std::endl;
+		std::cout << "error: could not open Settings File" << std::endl;
 	}
 	Settings << "ButtonX=" << std::min(Gui->getButtonX(), Gui->getMaxXButtonHeight()) << std::endl;
 	Settings << "ButtonY=" << std::min(Gui->getButtonY(), Gui->getMaxYButtonHeight()) << std::endl;
@@ -298,6 +302,8 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "lowImageScale=" << Gui->gethighImageScale() << std::endl;
 	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
 	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
+	Settings << "SettingsFilePath=" << Gui->getSettingsPath() << std::endl;
+
 	Settings << "TrashbinPath=" << Gui->getTrashbinPath() << std::endl;
 	std::filesystem::path neww(Gui->getTrashbinPath());
 	std::filesystem::create_directories(neww);
@@ -307,7 +313,6 @@ void save(Fl_Widget* win, void* Src) {
 		fl_choice("Trash location changed", "ok",0,0);
 	}
 	Gui->update(Gui->GetCurrentlyOpenPage());
-
 }
 
 SettGui::~SettGui()

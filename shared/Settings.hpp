@@ -35,7 +35,8 @@ enum Setting
 	highImageScale,
 	TrashbinPath,
 	lowMultipopTiming,
-	highMultipopTiming
+	highMultipopTiming,
+	SettingsFilePath
 };
 
 
@@ -68,6 +69,7 @@ struct Settings {
 	std::string TrashbinPath;
 	double lowMultipopTiming;
 	double highMultipopTiming;
+	std::string SettingsFilePath;
 };
 
 Settings*	ReadSettings(std::string str);

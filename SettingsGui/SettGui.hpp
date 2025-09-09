@@ -17,6 +17,8 @@
 #include <string>
 #include <filesystem>
 
+class GeneralSettings;
+
 class SettGui {
 private:
 	int W, H;
@@ -31,8 +33,6 @@ private:
 	GeneralSettings* GenSett;
 	AdvancedSettings* AdvSett;
 	ImagesSettings* ImgSett;
-
-	
 	
 	std::vector<Fl_Button*> SelectorPanelButtons;
 	std::vector<const char*> SelectorPanelButtonNames = {
@@ -95,6 +95,7 @@ private:
 	const char* getTrashbinPath();
 	double getlowPopupFadeInTime();
 	double gethighPopupFadeInTime();
+	const char* getSettingsPath();
 };
 
 void Close(Fl_Widget* win, void* Src);
