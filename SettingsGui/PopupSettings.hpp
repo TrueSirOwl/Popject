@@ -7,10 +7,13 @@
 #include <FL/Fl_Hor_Value_Slider.H>
 #include <FL/Fl_Hor_Slider.H>
 #include <FL/Fl_Check_Button.H>
+#include <FL/fl_ask.H>
 #include "../shared/Settings.hpp"
 #include <string>
 #include <algorithm>
 #include "RangeSlider.hpp"
+#include <Fl/Fl_File_Chooser.H>
+
 
 class PopupSettings : public Fl_Double_Window
 {
@@ -44,6 +47,8 @@ public:
 	//------------------------------------------------
 	int FolderPathx, FolderPathy, FolderPathw, FolderPathh;
 	Fl_Input* ImageFolderPath;
+	Fl_File_Chooser* ImageFolderPathChooser;
+	Fl_Button* ImageFolderPathChooserButton;
 	//------------------------------------------------
 	int Multipopx, Multipopy;
 	RangeSlider* MultipopRangeSlider;
@@ -54,6 +59,10 @@ public:
 
 	RangeSlider* ImageScaleRangeSlider;
 	//------------------------------------------------
+
+
+	static void ActivatePathChooser(Fl_Widget* w, void* data);
+	static void SetSettingsPath(Fl_File_Chooser* chooser, void* data);
 
 	static void ResizeButtonTextField(Fl_Widget* w, void* data);
 	static void ActivateFadeout(Fl_Widget* w, void* data);

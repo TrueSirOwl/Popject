@@ -108,7 +108,7 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->TimeBetweenMultipopsRangeSlider->value(this->SettingsFileContent->lowTimeBetweenPopups, this->SettingsFileContent->highTimeBetweenPopups);
 	this->TimeBetweenMultipopsRangeSlider->tooltip("Sets the time between multipops, Min time is always image loading time");
 
-//------------------------------------------------
+	//------------------------------------------------
 	FolderPathx = 150;
 	FolderPathy = 170;
 	FolderPathw = 0;
@@ -117,6 +117,11 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->ImageFolderPath = new Fl_Input(FolderPathx, FolderPathy, 700, 20, "Image Folder Path");
 	this->ImageFolderPath->value(this->SettingsFileContent->ImageFolderPath.c_str());
 	this->ImageFolderPath->tooltip("this is the path the program will get all its images from");
+	this->ImageFolderPathChooser = new Fl_File_Chooser("test", "", 4, "Choose a folder");
+	this->ImageFolderPathChooser->callback(SetSettingsPath, this);
+	this->ImageFolderPathChooserButton = new Fl_Button(FolderPathx + 700 ,FolderPathy,30,20);
+	this->ImageFolderPathChooserButton->label("...");
+	this->ImageFolderPathChooserButton->callback(ActivatePathChooser, this);
 	//------------------------------------------------
 	
 	ImageScalex = 200;
@@ -132,6 +137,17 @@ PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Do
 	this->ImageScaleRangeSlider->tooltip("Sets the Max size of the Popups in relation to actual image size, limited by screen size");
 
 	hide();
+}
+
+void PopupSettings::ActivatePathChooser(Fl_Widget* w, void* data) {
+	PopupSettings* Gui = static_cast<PopupSettings*>(data);
+	Gui->ImageFolderPathChooser->show();
+}
+
+void PopupSettings::SetSettingsPath(Fl_File_Chooser* chooser, void* data) {
+	PopupSettings* Gui = static_cast<PopupSettings*>(data);
+
+	Gui->ImageFolderPath->value(chooser->value());
 }
 
 
