@@ -3,8 +3,9 @@
 #include <SDL3/SDL_thread.h>
 
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
-sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(false), fadein_done(false), fadein_opacity(0),
-Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
+sett(popsett), ImageLib(src), PopupRenderer(renderer), window(wind), imageTexture(NULL), imageSurface(NULL), dispbounds(displays),
+Gif(NULL), Current_image(0), last_image(0), Content(IMAGE),
+fadein_opacity(0), fadein_done(false), PrepFinished(false), death(false) {
 	rng = create_rng();
 	this->start = {};
 	this->end = {};
