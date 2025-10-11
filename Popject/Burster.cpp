@@ -33,12 +33,12 @@ void Burster::burst() {
 	SDL_GetCurrentTime(&now);
 	std::vector<Popup*>::iterator it = burstBuffer.begin();
 	if (SDL_NS_TO_MS(now) - SDL_NS_TO_MS(last) > burst_random_timing(rng)) {
-		if (Burst_iterator != burstBuffer.end()) {
-			++Burst_iterator;
+		if (this->Burst_iterator != burstBuffer.end()) {
+			++this->Burst_iterator;
 			last = now;
 		}
 	}
-	while (it != Burst_iterator && it != burstBuffer.end()) {
+	while (it != this->Burst_iterator && it != burstBuffer.end()) {
 		(*it)->PopUp();
 		++it;
 	}

@@ -49,7 +49,8 @@ Settings *ReadSettings(std::string loc) {
 		{"highImageScale",Setting::highImageScale},
 		{"lowImageScale", Setting::lowImageScale},
 		{"TrashbinPath", Setting::TrashbinPath},
-		{"SettingsFilePath", Setting::SettingsFilePath}
+		{"SettingsFilePath", Setting::SettingsFilePath},
+		{"mainFunction", Setting::mainFunction},
 	};
 	int settingsDone = 0;
 	while (std::getline(setting, line)) {
@@ -198,6 +199,9 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->highMultipopTiming = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
 
+	case Setting::mainFunction:
+		SettingsStruct->mainFunction = line.substr(line.find('=') + 1, line.length());
+		break;
 	default:
 		break;
 	}
@@ -234,4 +238,5 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->SettingsFilePath = "./shared/Settings.txt";
 	sett->lowMultipopTiming = 0;
 	sett->highMultipopTiming = 300;
+	sett->mainFunction = "Popups";
 }

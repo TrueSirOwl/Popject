@@ -16,8 +16,6 @@
 #include "Burster.hpp"
 #include "random.hpp"
 
-void SetWindowTopmost(SDL_Window* window);
-
 int main(int argc, char* argv[]) {
 	
 	std::string loc;
@@ -29,6 +27,9 @@ int main(int argc, char* argv[]) {
 	
 	SDL_Init(SDL_INIT_VIDEO);
 	Settings* Sett = ReadSettings(loc);
+	loc = Sett->SettingsFilePath;
+	delete Sett;
+	Sett = ReadSettings(loc);
 	CreateLogFile();
 	
 	signal(SIGINT, SIG_DFL);
@@ -36,16 +37,38 @@ int main(int argc, char* argv[]) {
 		std::cerr << "No Image path specified!" << std::endl;
 		return(1);
 	}
+	
+	//Selection of feature happens here
+	
+	if (Sett->mainFunction == "Popups") {
+		popup_routine(Sett);
+	}
+	if (Sett->mainFunction == "Content_sorting") {
+		
+	}
+}
+
+void content_sorting_routine(Settings* Sett) {
 	ImageStorage IMGLib = ImageStorage(Sett->ImageFolderPath);
 	LOG(INFO, Sett->LoggingStrenght , "Getting Images from : "+ Sett->ImageFolderPath);
 	
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
+
+}
+
+void popup_routine(Settings* Sett) {
+	
+	ImageStorage IMGLib = ImageStorage(Sett->ImageFolderPath);
+	LOG(INFO, Sett->LoggingStrenght , "Getting Images from : "+ Sett->ImageFolderPath);
+	
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+	
 	//create an array containing available screens
 	int dispnum;
 	SDL_DisplayID* disps;
-
 	disps = SDL_GetDisplays(&dispnum);
 	SDL_Rect dispbounds[dispnum];
 	int c = 0;
@@ -54,43 +77,44 @@ int main(int argc, char* argv[]) {
 		++c;
 	}
 
-	//Initialize window and renderer
 	SDL_CreateWindowAndRenderer("title",dispbounds[0].w, dispbounds[0].h, SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_TRANSPARENT | SDL_WINDOW_NOT_FOCUSABLE| SDL_WINDOW_BORDERLESS, &window,&renderer);
-
+	
 	SDL_SetRenderVSync(renderer, 1);
-
+	
 	//set up and display window and renderer
 	SetWindowClickThrough(window);
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
-
+	
 	std::mt19937 rng = create_rng();
-
+	
 	std::uniform_real_distribution<double> Time_Between_Popups_random_dist(Sett->lowTimeBetweenPopups, Sett->highTimeBetweenPopups);
 	double TimeBetweenPopups = Time_Between_Popups_random_dist(rng);
-
+	
 	std::queue<Burster*> preps;
-
+	
 	std::vector<Burster*> active;
 	std::vector<Burster*>::iterator it;
-
+	
 	std::queue<Burster*>trash;
-
-	//intializes the queue with two bursters to have a backlocg that can load their images in the background
+	
+	//intializes the queue with two bursters to have a backlog that can load their images in the background
 	preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
 	preps.push(new Burster(IMGLib, *Sett, dispbounds, window, renderer));
-
+	
 	SDL_Time start;
 	SDL_Time end = 0;
 	SDL_Event event;
-
+	
 	SDL_GetCurrentTime(&start);
-
+	
 	while (true) {
 		if (SDL_PollEvent(&event)) {}
 		SetWindowTopmost(window);
 		SDL_RenderClear(renderer);
 		if (SDL_NS_TO_MS(end) - SDL_NS_TO_MS(start) > TimeBetweenPopups) {
+			TimeBetweenPopups = Time_Between_Popups_random_dist(rng);
+			std::cout << "next burst in: " << TimeBetweenPopups << std::endl;
 			if (preps.front()->burst_prep_check() == true) {
 				active.push_back(preps.front());
 				preps.pop();
@@ -98,7 +122,7 @@ int main(int argc, char* argv[]) {
 				SDL_GetCurrentTime(&start);
 			}
 		}
-
+	
 		it = active.begin();
 		while (it != active.end()) {
 			(*it)->burst();
@@ -112,7 +136,7 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(renderer);
 		SDL_GetCurrentTime(&end);
 	}
-
+	
 	// cleanup
 	
 	while (preps.empty() == false ) {
@@ -121,7 +145,6 @@ int main(int argc, char* argv[]) {
 	delete(Sett);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
-	return (0);
 }
 
 

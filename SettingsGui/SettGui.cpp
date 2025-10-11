@@ -247,6 +247,20 @@ const char* SettGui::getSettingsPath() {
 	return(this->GenSett->SettingsPath->value());
 }
 
+const char* SettGui::getMainFunction() {
+	int c = 0;
+	while (c < this->GenSett->main_function_selector_pack->children()) {
+		Fl_Widget* widget = this->GenSett->main_function_selector_pack->child(c);
+		if (Fl_Radio_Button* radioButton = dynamic_cast<Fl_Radio_Button*>(widget)) {
+			if (radioButton->value()) {
+				return radioButton->label();
+			}
+		}
+		++c;
+	}
+	return ("NOTHING FOUND");
+}
+
 void Close(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
 	switch (fl_choice("do you want to save?", "cancel" , "yes", "no")) {
@@ -303,6 +317,7 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
 	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
 	Settings << "SettingsFilePath=" << Gui->getSettingsPath() << std::endl;
+	Settings << "mainFunction=" << Gui->getMainFunction() << std::endl;
 
 	Settings << "TrashbinPath=" << Gui->getTrashbinPath() << std::endl;
 	std::filesystem::path neww(Gui->getTrashbinPath());

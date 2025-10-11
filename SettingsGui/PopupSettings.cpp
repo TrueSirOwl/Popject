@@ -168,6 +168,8 @@ PopupSettings::~PopupSettings() {
 	delete (this->PopupLifespanRangeSlider);
 	delete (this->TimeBetweenMultipopsRangeSlider);
 	delete (this->ImageFolderPath);
+	delete (this->ImageFolderPathChooser);
+	delete (this->ImageFolderPathChooserButton);
 	delete (this->MultipopRangeSlider);
 	delete (this->MultipopTimingRangeSlider);
 	delete (this->ImageScaleRangeSlider);

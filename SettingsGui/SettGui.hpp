@@ -96,6 +96,8 @@ private:
 	double getlowPopupFadeInTime();
 	double gethighPopupFadeInTime();
 	const char* getSettingsPath();
+	const char* getSelectedMainFunction();
+	const char* getMainFunction();
 };
 
 void Close(Fl_Widget* win, void* Src);

@@ -4,6 +4,7 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Value_Input.H>
+#include <Fl/Fl_Round_Button.H>
 #include "Settings.hpp"
 #include <cmath>
 
@@ -13,7 +14,7 @@ class RangeSlider : public Fl_Widget {
 	bool dragging_low = false;
 	bool dragging_high = false;
 	int knob_width = 10;
-	int lower_button_offset = 2;
+	int button_lowering_offset = 2;
 	int knob_offset;
 	int lx, hx;
 	double temphval;
@@ -38,6 +39,10 @@ class RangeSlider : public Fl_Widget {
 
 	void limit_vals();
 	void reset_val_limiting();
+	Fl_Round_Button* test = NULL;
+	static void test_callback(Fl_Widget* w, void* data);
+
+
 
 	public:
 	void tooltip(const char* text);

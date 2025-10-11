@@ -1,15 +1,15 @@
 #include "ImageStorage.hpp"
 #include <random>
+#include "random.hpp"
 
 std::string ImageStorage::getRandomImage() {
 	if (this->ImageLib.empty()) {
 		std::cerr << "No images found." << std::endl;
 		return "";
 	}
-	std::random_device rd;
-	std::default_random_engine randomizerEngine(rd());
+	std::mt19937 rng = create_rng();
 	std::uniform_int_distribution<int> random_number(0, RAND_MAX);
-	int randomIndex = random_number(randomizerEngine) % this->ImageLib.size();
+	int randomIndex = random_number(rng) % this->ImageLib.size();
 	return (this->ImageLib[randomIndex]);
 }
 

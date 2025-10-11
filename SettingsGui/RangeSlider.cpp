@@ -13,6 +13,15 @@
 		selected_range_color = 136;
 		box_color = FL_BACKGROUND_COLOR;
 		background_color = FL_BACKGROUND_COLOR;
+
+		test = new Fl_Round_Button(x() + w() + 50, y(), 20, h());
+		test->tooltip("this button enables weighting of this slider (with it you can select a area in the range that is more likely to be selected)");
+		test->callback(test_callback,this);
+	}
+
+	void RangeSlider::test_callback(Fl_Widget *w, void *data) {
+		RangeSlider* slider = static_cast<RangeSlider*>(data);
+		slider->redraw();
 	}
 
 	void RangeSlider::CalculateKnobPosition() {
@@ -75,16 +84,16 @@
 
 		// selected range
 		fl_color(selected_range_color);
-		fl_rectf(lx + knob_width, y() + lower_button_offset, hx - lx - lower_button_offset, h()-4);
-
-		//if (hx < lx + knob_width) {
-		//	hx = lx + knob_width;
-		//}
+		fl_rectf(lx + knob_width, y() + button_lowering_offset, hx - lx - button_lowering_offset, h()-4);
 
 		// selectors
-		fl_draw_box(FL_UP_BOX, lx, y() + lower_button_offset, knob_width, h()-4, box_color);
-		fl_draw_box(FL_UP_BOX, hx, y() + lower_button_offset, knob_width, h()-4, box_color);
+		fl_draw_box(FL_UP_BOX, lx, y() + button_lowering_offset, knob_width, h()-4, box_color);
+		fl_draw_box(FL_UP_BOX, hx, y() + button_lowering_offset, knob_width, h()-4, box_color);
 
+		//weight
+		if (test->value() == 1) {
+			fl_draw_box(FL_UP_BOX, lx+((hx-lx)/2) + 4, y() + button_lowering_offset, 2, h()-4, box_color);
+		}
 		reset_val_limiting();
 	}
 

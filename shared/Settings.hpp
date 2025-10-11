@@ -36,7 +36,8 @@ enum Setting
 	TrashbinPath,
 	lowMultipopTiming,
 	highMultipopTiming,
-	SettingsFilePath
+	SettingsFilePath,
+	mainFunction,
 };
 
 
@@ -70,6 +71,7 @@ struct Settings {
 	double lowMultipopTiming;
 	double highMultipopTiming;
 	std::string SettingsFilePath;
+	std::string mainFunction;
 };
 
 Settings*	ReadSettings(std::string str);

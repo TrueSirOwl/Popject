@@ -5,7 +5,7 @@
 Popup::Popup(ImageStorage& src, const Settings popsett, SDL_Rect* displays , SDL_Window* wind, SDL_Renderer* renderer): 
 sett(popsett), ImageLib(src), death(false), dispbounds(displays), PrepFinished(false), fadein_done(false), fadein_opacity(0),
 Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMAGE), last_image(0), window(wind), PopupRenderer(renderer) {
-	create_rng();
+	rng = create_rng();
 	this->start = {};
 	this->end = {};
 	std::uniform_real_distribution<double> fadeout_steps_random_dist(this->sett.lowPopupFadeOutSteps, this->sett.highPopupFadeOutSteps);
@@ -25,7 +25,6 @@ Current_image(0), imageSurface(NULL), imageTexture(NULL), Gif(NULL), Content(IMA
 	this->fadeout_step = fadeout_time_random_val / fade_steps_random_val;
 	this->fadein_step = fadein_time_random_val / fade_steps_random_val;
 	sdl_loader = SDL_CreateThread(getImageT, "loader", this);
-	rng = create_rng();
 }
 
 int Popup::getImageT(void* data) {
@@ -141,7 +140,6 @@ void Popup::DoImage() {
 	} else {
 		if (start == 0) {
 			SDL_GetCurrentTime(&start);
-
 		}
 		SDL_Time now;
 		SDL_GetCurrentTime(&now);
@@ -220,6 +218,9 @@ void Popup::FadeIn() {
 	SDL_Time middle;
 
 	SDL_GetCurrentTime(&middle);
+	if (fadein_step <= 0) {
+		fadein_opacity = opacity_random_val;
+	}
 	if (fadein_opacity < opacity_random_val) {
 		if (SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end) >= fadein_step) {
 			double stepmult = ((SDL_NS_TO_MS(middle) - SDL_NS_TO_MS(end)) / fadein_step);
