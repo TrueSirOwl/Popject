@@ -1,7 +1,9 @@
 CXX = g++
-CXXFLAGS = -g3 -std=c++23 -Ishared
+BASE_CXXFLAGS = -g3 -std=c++23 -Ishared
+STRICTFLAGS = -Wall -Wextra -Werror
+CXXFLAGS = $(BASE_CXXFLAGS) $(EXTRA_CXXFLAGS)
 
-PopSRC = Popject/main.cpp Popject/ImageStorage.cpp Popject/Popup.cpp Popject/Burster.cpp
+PopSRC = Popject/main.cpp Popject/ImageStorage.cpp Popject/Popup.cpp Popject/Burster.cpp Popject/ImageSort.cpp
 SettSRC = SettingsGui/ImagesSettings.cpp SettingsGui/RangeSlider.cpp SettingsGui/AdvancedSettings.cpp SettingsGui/GeneralSettings.cpp SettingsGui/PopupSettings.cpp SettingsGui/SettGui.cpp SettingsGui/Main.cpp
 SharedSRC = shared/Debug.cpp shared/Settings.cpp shared/random.cpp
 
@@ -19,7 +21,11 @@ SharedOBJ = $(SharedSRC:.cpp=.g++.o)
 POPJECT = popject
 SETTING = settings
 
+
 all: popject settings
+
+strict:
+	$(MAKE) EXTRA_CXXFLAGS="$(STRICTFLAGS)" re
 
 popject: $(PopOBJ) $(SharedOBJ)
 	$(CXX) $(PopOBJ) $(SharedOBJ) $(SDL_LDFLAGS) $(SDL_LIBS) -o $(POPJECT)

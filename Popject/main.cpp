@@ -15,6 +15,7 @@
 #include <queue>
 #include "Burster.hpp"
 #include "random.hpp"
+#include "ImageSort.hpp"
 
 int main(int argc, char* argv[]) {
 	
@@ -44,19 +45,13 @@ int main(int argc, char* argv[]) {
 		popup_routine(Sett);
 	}
 	if (Sett->mainFunction == "Content_sorting") {
-		
+		content_sorting_routine(Sett);
 	}
-}
 
-void content_sorting_routine(Settings* Sett) {
-	ImageStorage IMGLib = ImageStorage(Sett->ImageFolderPath);
-	LOG(INFO, Sett->LoggingStrenght , "Getting Images from : "+ Sett->ImageFolderPath);
-	
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-
+	SDL_Quit();
 
 }
+
 
 void popup_routine(Settings* Sett) {
 	
@@ -108,9 +103,10 @@ void popup_routine(Settings* Sett) {
 	
 	SDL_GetCurrentTime(&start);
 	
+	
 	while (true) {
 		if (SDL_PollEvent(&event)) {}
-		SetWindowTopmost(window);
+		SDL_SetWindowAlwaysOnTop(window,true);
 		SDL_RenderClear(renderer);
 		if (SDL_NS_TO_MS(end) - SDL_NS_TO_MS(start) > TimeBetweenPopups) {
 			TimeBetweenPopups = Time_Between_Popups_random_dist(rng);
@@ -158,18 +154,18 @@ void popup_routine(Settings* Sett) {
 #include <X11/extensions/shape.h>
 #endif
 
-void SetWindowTopmost(SDL_Window* window) {
-#if defined(SDL_PLATFORM_WIN32)
-	SDL_PropertiesID props = SDL_GetWindowProperties(window);
-	HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
-	if (hwnd) {
-		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-	} else {
-		std::cerr << "Failed to get HWND from SDL window" << std::endl;
-	SDL_Log("Failed to get HWND from SDL window");
-	}
-	#endif
-}
+// void SetWindowTopmost(SDL_Window* window) {
+// #if defined(SDL_PLATFORM_WIN32)
+// 	SDL_PropertiesID props = SDL_GetWindowProperties(window);
+// 	HWND hwnd = (HWND)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+// 	if (hwnd) {
+// 		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+// 	} else {
+// 		std::cerr << "Failed to get HWND from SDL window" << std::endl;
+// 	SDL_Log("Failed to get HWND from SDL window");
+// 	}
+// 	#endif
+// }
 
 void SetWindowClickThrough(SDL_Window* window) {
 
