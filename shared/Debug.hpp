@@ -4,6 +4,7 @@
 #include <string>
 
 extern std::ofstream Log;
+extern int Log_strength;
 
 enum HornySeverity {
 	INFO,
@@ -13,4 +14,4 @@ enum HornySeverity {
 };
 
 void CreateLogFile();
-void LOG(HornySeverity s,int setting, std::string message);
+void LOG(HornySeverity s, std::string message);

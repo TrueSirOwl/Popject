@@ -1,25 +1,35 @@
 #include "Settings.hpp"
-#include <fstream>
-#include <iostream>
+#include "Sqlite.hpp"
+#include "Debug.hpp"
 
-Settings *ReadSettings(std::string loc) {
+Settings* ReadSettings(std::string loc) {
 	Settings* SettingsStruct = new Settings;
 	std::string line;
 	std::ifstream setting(loc);
 	std::string stdpath = "./shared/Settings.txt";
 	if (setting.is_open() == false) {
-		std::cerr << "Setting file at: " << loc << " could not be opened!" << std::endl;
+		LOG(HERROR, "Setting file at: " + loc + " could not be opened!\nFalling back to standard Settings file");
 		if (loc == stdpath) {
-			std::cout << "Standard settings file was not found, creating it" << std::endl;
+			LOG(WARNING, "Standard Settings file was not found, recreating it");
 			std::ofstream creator("shared/Settings.txt");
 			setStandardSettingsFile(SettingsStruct);
+		} else if (loc == "") {
+			LOG(WARNING, "Settings location string was empty, loading Standard Settings file");
+			setting = std::ifstream(stdpath);
 		} else {
+			LOG(FATAL, "Unexpected Settings file condition, Aborting");
 			exit(1);
 		}
+		// open settings database,
+		// find last opened setting
+		// open it
+		// read it
+		// return struct
 	} else {
-		std::cout << "Setting file at: " << loc << " opened!" << std::endl;
+		LOG(INFO,"Setting file at: " + loc + " opened!" );
 	}
 	const std::map<std::string, Setting> lineToEnumMap = {
+		{"Name", Setting::Name},
 		{"ButtonX", Setting::ButtonX},
 		{"ButtonY", Setting::ButtonY},
 		{"ButtonText", Setting::ButtonText},
@@ -52,15 +62,38 @@ Settings *ReadSettings(std::string loc) {
 		{"SettingsFilePath", Setting::SettingsFilePath},
 		{"mainFunction", Setting::mainFunction},
 	};
-	int settingsDone = 0;
+	long unsigned int settingsDone = 0;
+	std::set<Setting> done_settings_set;
+	Setting found_setting;
 	while (std::getline(setting, line)) {
-		load_from_file(line, OwOWhatSettingDis(line, lineToEnumMap), SettingsStruct);
+		found_setting = OwOWhatSettingDis(line, lineToEnumMap);
+		load_from_file(line, found_setting, SettingsStruct);
+		done_settings_set.emplace(found_setting);
 		++settingsDone;
 	}
 
-	if (settingsDone < lineToEnumMap.size()) {
-		LOG(HERROR,1,"Settings File Corrupt, restoring to standard settings file");
-		setStandardSettingsFile(SettingsStruct);
+	std::set<std::string> missed_settings;
+
+	for (const std::pair<const std::string, Setting>& entry : lineToEnumMap) {
+		const std::string& setting_name = entry.first;
+		const Setting& setting_enum = entry.second;
+		if (done_settings_set.find(setting_enum) == done_settings_set.end()) {
+			missed_settings.insert(setting_name);
+		}
+	}
+	
+	if (missed_settings.empty() == false) {
+		LOG(HERROR, "Settings File Corrupt, or missing entries:" );
+		for (const auto& missed : missed_settings) {
+			LOG(WARNING, missed);
+		}
+		if (loc == stdpath) {
+			LOG(WARNING, "Standard Settings file was broken, to restore it please save it again");
+			setStandardSettingsFile(SettingsStruct);
+			return(SettingsStruct);
+		}
+		setting.close();
+		return(NULL);
 	}
 	return(SettingsStruct);
 }
@@ -72,7 +105,7 @@ Setting OwOWhatSettingDis(std::string line, const std::map<std::string, Setting>
 		return (it->second);
 	}
 	else {
-		std::cerr << "invalid setting: " << LineSetting << std::endl;
+		LOG(HERROR,"invalid setting: " + LineSetting );
 		return (nosett);
 	}
 }
@@ -80,6 +113,10 @@ Setting OwOWhatSettingDis(std::string line, const std::map<std::string, Setting>
 void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 	switch (sett)
 	{
+	case Setting::Name:
+		SettingsStruct->Name = line.substr(line.find('=') + 1, line.length());
+		break;
+
 	case Setting::ButtonX:
 		SettingsStruct->ButtonX = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -169,7 +206,7 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		break;
 
 	case Setting::LoggingStrength:
-		SettingsStruct->LoggingStrenght = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		Log_strength = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
 
 	case Setting::lowImageScale:
@@ -182,6 +219,7 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 
 	case Setting::Range_slider_value_shoving:
 		SettingsStruct->Range_slider_value_shoving = std::stoi(line.substr(line.find('=') + 1, line.length()));
+		break;
 
 	case Setting::TrashbinPath:
 		SettingsStruct->TrashbinPath = line.substr(line.find('=') + 1, line.length());
@@ -208,13 +246,13 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 }
 
 void setStandardSettingsFile(Settings* sett) {
+	sett->Name = "default";
 	sett->lowMultipop = 1;
 	sett->highMultipop = 2;
 	sett->ButtonText = "test";
 	sett->ButtonX = 10;
 	sett->ButtonY = 10;
-	sett->ImageFolderPath = "";
-	sett->LoggingStrenght = 0;
+	sett->ImageFolderPath = "./Trash";
 	sett->MaxXButtonHeight = 100;
 	sett->MaxYButtonHeight = 100;
 	sett->MinXButtonHeight = 10;

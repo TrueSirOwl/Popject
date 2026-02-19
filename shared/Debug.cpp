@@ -20,25 +20,25 @@ void CreateLogFile() {
 	Log = std::ofstream(time.c_str());
 }
 
-void LOG(HornySeverity s, int strength, std::string message) {
+void LOG(HornySeverity s, std::string message) {
 	switch (s) {
 	case INFO:
-		if (strength <= INFO) {
+		if (Log_strength <= INFO) {
 			Log << "INFO: " << message << std::endl;
 		}
 		break;
 	case WARNING:
-		if (strength <= WARNING) {
+		if (Log_strength <= WARNING) {
 			Log << "WARNING: " << message << std::endl;
 		}
 		break;
 	case HERROR:
-		if (strength <= HERROR) {
+		if (Log_strength <= HERROR) {
 			Log << "ERROR: " << message << std::endl;
 		}
 		break;
 	case FATAL:
-		if (strength <= FATAL) {
+		if (Log_strength <= FATAL) {
 			Log << "FATAL: " << message << std::endl;
 		}
 		break;

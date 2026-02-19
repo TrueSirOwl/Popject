@@ -2,11 +2,15 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include "Debug.hpp"
+
+
 
 enum Setting
 {
 	nosett = -1,
+	Name,
 	ButtonX,
 	ButtonY,
 	ButtonText,
@@ -42,6 +46,7 @@ enum Setting
 
 
 struct Settings {
+	std::string Name;
 	int ButtonX, ButtonY;
 	std::string ButtonText;
 	double lowPopupLifespan;
@@ -64,7 +69,6 @@ struct Settings {
 	double highPopupFadeInTime;
 	double lowPopupOpacity;
 	double highPopupOpacity;
-	int LoggingStrenght;
 	double lowImageScale;
 	double highImageScale;
 	std::string TrashbinPath;
@@ -74,7 +78,7 @@ struct Settings {
 	std::string mainFunction;
 };
 
-Settings*	ReadSettings(std::string str);
-Setting		OwOWhatSettingDis(const std::string line, const std::map<std::string, Setting> lineToEnumMap);
-void		load_from_file(std::string line, Setting sett, Settings *settingStruct);
-void		setStandardSettingsFile(Settings* sett);
+Settings*				ReadSettings(std::string str);
+Setting					OwOWhatSettingDis(const std::string line, const std::map<std::string, Setting> lineToEnumMap);
+void					load_from_file(std::string line, Setting sett, Settings *settingStruct);
+void					setStandardSettingsFile(Settings* sett);
