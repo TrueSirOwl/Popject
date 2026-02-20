@@ -44,7 +44,7 @@ void Popup::getImage()
 	}
 	this->imageSurface = IMG_Load(this->ContentPath.c_str());
 	if (this->imageSurface == NULL) {
-		LOG(WARNING, this->sett.LoggingStrenght, "Loading " + this->ContentPath + " Failed: " + (std::string)SDL_GetError());
+		LOG(WARNING, "Loading " + this->ContentPath + " Failed: " + (std::string)SDL_GetError());
 		exit(1);
 	}
 }
@@ -91,7 +91,7 @@ bool Popup::Popup_prep() {
 	}
 	this->imageTexture = SDL_CreateTextureFromSurface(this->PopupRenderer,this->imageSurface);
 	if (this->imageTexture == NULL) {
-		LOG(HERROR, this->sett.LoggingStrenght ,SDL_GetError());
+		LOG(HERROR ,SDL_GetError());
 		SDL_ClearError();
 	}
 	SDL_SetTextureBlendMode(this->imageTexture, SDL_BLENDMODE_BLEND);

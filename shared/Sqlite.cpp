@@ -16,7 +16,7 @@ int get_settings_location_callback(void* data, int argc, char** argv, char** col
 	if (output->empty() == true) {
 		*output = argv[0];
 	} else {
-		LOG(WARNING,  "Database contains more than one last opened file");
+		LOG(WARNING, "Database contains more than one last opened file");
 		return(1);
 	}
 	return (0);
@@ -109,7 +109,7 @@ std::map<std::string, std::string> create_settings_list(sqlite3* database){
 }
 
 int insert_new_setting_into_settings_table(std::string location, std::string name, sqlite3* database) {
-	std::string sql = "SELECT SETTINGS_STORAGE WHERE OPENED_LAST = 1";
+	std::string sql = "SELECT * FROM SETTINGS_STORAGE WHERE OPENED_LAST = 1";
 	char* err = NULL;
 	std::string loc;
 	int ret = sqlite3_exec(database, sql.c_str(), get_settings_location_callback, &loc, &err);
@@ -123,9 +123,10 @@ int insert_new_setting_into_settings_table(std::string location, std::string nam
 		LOG(WARNING,  err);
 		sqlite3_free(err);
 	}
-	std::string command = "INSERT INTO SETTINGS_STORAGE VALUES('" + location + "', '" + name + "', '1')";
-	ret = sqlite3_exec(database, command.c_str(), NULL, 0, &err);
+	sql = "INSERT INTO SETTINGS_STORAGE VALUES('" + location + "', '" + name + "', '1')";
+	ret = sqlite3_exec(database, sql.c_str(), NULL, NULL, &err);
 	if (ret != SQLITE_OK) {
+		int extended = sqlite3_extended_errcode(database);
 		LOG(WARNING,  err);
 		sqlite3_free(err);
 		sql = "UPDATE SETTINGS_STORAGE SET OPENED_LAST = 1 WHERE LOCATION = " + loc;
@@ -133,6 +134,9 @@ int insert_new_setting_into_settings_table(std::string location, std::string nam
 		if (ret != SQLITE_OK) {
 			LOG(WARNING,  err);
 			sqlite3_free(err);
+		}
+		if (extended == SQLITE_CONSTRAINT_UNIQUE) {
+			return(-2);
 		}
 		return(-1);
 	}
@@ -159,7 +163,7 @@ void Restore_default_table(sqlite3* Database) {
 	char* errmsg;
 	std::string command =	"CREATE TABLE IF NOT EXISTS SETTINGS_STORAGE("
 				"LOCATION		TEXT	NOT NULL PRIMARY KEY,"
-				"NAME			TEXT	NOT NULL,"
+				"NAME			TEXT	NOT NULL UNIQUE,"
 				"OPENED_LAST	INTEGER	NOT NULL)";
 	int err = sqlite3_exec(Database, command.c_str(), NULL, 0, &errmsg);
 	if (err == SQLITE_OK) {

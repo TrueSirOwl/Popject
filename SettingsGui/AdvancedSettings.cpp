@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) : Fl_Window(x, y, w, h), X(x), Y(y), W(w), H(h), SettingsFileContent(sett) {
+AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) : Fl_Window(x, y, w, h), SettingsFileContent(sett), X(x), Y(y), W(w), H(h) {
 	box(FL_BORDER_BOX);
 
 	//this->SettingsFileContent = ReadSettings();
@@ -34,7 +34,7 @@ AdvancedSettings::AdvancedSettings(int x, int y, int w, int h, Settings* sett) :
 	this->LoggingStrength = new Fl_Hor_Slider(Loggingx, Loggingy, 100, 20,"Logging");
 	this->LoggingStrength->range(0, 3);
 	this->LoggingStrength->step(1);
-	this->LoggingStrength->value(this->SettingsFileContent->LoggingStrenght);
+	this->LoggingStrength->value(Log_strength);
 	this->LoggingStrength->align(FL_ALIGN_LEFT);
 	this->LoggingStrength->callback(SetLoggingStrenght, this);
 
@@ -79,6 +79,7 @@ AdvancedSettings::~AdvancedSettings()
 }
 
 void AdvancedSettings::SetLoggingStrenght(Fl_Widget* w, void* data) {
+	++w = NULL;
 	AdvancedSettings* Gui = static_cast<AdvancedSettings*>(data);
 
 	switch ((int)Gui->LoggingStrength->value())

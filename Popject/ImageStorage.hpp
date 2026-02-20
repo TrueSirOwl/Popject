@@ -19,6 +19,7 @@ private:
 
 public:
 	std::string getRandomImage();
+	int get_Lib_size();
 	ImageStorage(std::string ImageFolderPath);
 };
 

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Double_Window(x, y, w, h),X(x),Y(y),W(w),H(h), SettingsFileContent(sett) {
+PopupSettings::PopupSettings(int x, int y, int w, int h, Settings* sett) : Fl_Double_Window(x, y, w, h), SettingsFileContent(sett), X(x), Y(y), W(w), H(h) {
 	box(FL_BORDER_BOX);
 
 	//this->SettingsFileContent = ReadSettings();

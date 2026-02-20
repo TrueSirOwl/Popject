@@ -14,15 +14,15 @@
 		box_color = FL_BACKGROUND_COLOR;
 		background_color = FL_BACKGROUND_COLOR;
 
-		test = new Fl_Round_Button(x() + w() + 50, y(), 20, h());
-		test->tooltip("this button enables weighting of this slider (with it you can select a area in the range that is more likely to be selected)");
-		test->callback(test_callback,this);
+		// test = new Fl_Round_Button(x() + w() + 50, y(), 20, h());
+		// test->tooltip("this button enables weighting of this slider (with it you can select a area in the range that is more likely to be selected)");
+		//test->callback(test_callback,this);
 	}
 
-	void RangeSlider::test_callback(Fl_Widget *w, void *data) {
-		RangeSlider* slider = static_cast<RangeSlider*>(data);
-		slider->redraw();
-	}
+	// void RangeSlider::test_callback(Fl_Widget *w, void *data) {
+	// 	RangeSlider* slider = static_cast<RangeSlider*>(data);
+	// 	slider->redraw();
+	// }
 
 	void RangeSlider::CalculateKnobPosition() {
 		double value_size_ratio = (w() - knob_width * 2 - 4) / (max_val - min_val);
@@ -46,10 +46,10 @@
 		}
 	}
 	void RangeSlider::reset_val_limiting() {
-		if (habove = true) {
+		if (habove == true) {
 			high_val = temphval;
 		}
-		if (lunder = true) {
+		if (lunder == true) {
 			low_val = templval;
 		}
 	}
@@ -91,9 +91,9 @@
 		fl_draw_box(FL_UP_BOX, hx, y() + button_lowering_offset, knob_width, h()-4, box_color);
 
 		//weight
-		if (test->value() == 1) {
-			fl_draw_box(FL_UP_BOX, lx+((hx-lx)/2) + 4, y() + button_lowering_offset, 2, h()-4, box_color);
-		}
+		// if (test->value() == 1) {
+		// 	fl_draw_box(FL_UP_BOX, lx+((hx-lx)/2) + 4, y() + button_lowering_offset, 2, h()-4, box_color);
+		// }
 		reset_val_limiting();
 	}
 
@@ -107,6 +107,7 @@
 	}
 
 	void RangeSlider::set_low_val(Fl_Widget* w, void* data) {
+		//++w = NULL;
 		RangeSlider* slider = static_cast<RangeSlider*>(data);
 		if (slider->low_input->value() < slider->high_val) {
 			slider->low_val = slider->low_input->value();
@@ -122,6 +123,7 @@
 	}
 
 	void RangeSlider::set_high_val(Fl_Widget* w, void* data) {
+		//++w = NULL;
 		RangeSlider* slider = static_cast<RangeSlider*>(data);
 		if (slider->high_input->value() > slider->low_val) {
 			slider->high_val = slider->high_input->value();
@@ -157,7 +159,7 @@
 		limit_vals();
 		CalculateKnobPosition();
 		reset_val_limiting();
-		int lx_offset = knob_width / 2;
+		//int lx_offset = knob_width / 2;
 	
 		double val = 0;
 		switch (event) {

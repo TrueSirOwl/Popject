@@ -16,22 +16,43 @@
 #include "Burster.hpp"
 #include "random.hpp"
 #include "ImageSort.hpp"
+#include "Sqlite.hpp"
+
+int Log_strength = 1;
 
 int main(int argc, char* argv[]) {
+
+	std::string loc = "";
+
+	//if (argc < 2) {
+	//	loc = Find_last_settings();
+	//} else {
+	//	loc = argv[1];
+	//}
 	
-	std::string loc;
-	if (argc < 2) {
-		loc = "./shared/Settings.txt";
-	} else {
-		loc = argv[1];
-	}
+	//return(0);
 	
 	SDL_Init(SDL_INIT_VIDEO);
-	Settings* Sett = ReadSettings(loc);
-	loc = Sett->SettingsFilePath;
-	delete Sett;
-	Sett = ReadSettings(loc);
+	
 	CreateLogFile();
+
+	sqlite3* database;
+	if(sqlite3_open("shared/Settings_Storage", &database) != SQLITE_OK) {
+		LOG(FATAL,"Failed to open databse: ");
+		LOG(FATAL,sqlite3_errmsg(database));
+		exit(1);
+	}
+
+	loc = Find_last_setting_location(database);
+
+	Settings* Sett = ReadSettings(loc);
+	if (Sett == NULL) {
+		LOG(FATAL, "Loading Settings File Failed");
+		exit(1);
+	}
+	//loc = Sett->SettingsFilePath;
+	//delete Sett;
+	//Sett = ReadSettings(loc);
 	
 	signal(SIGINT, SIG_DFL);
 	if (Sett->ImageFolderPath.empty() == true ) {
@@ -45,7 +66,8 @@ int main(int argc, char* argv[]) {
 		popup_routine(Sett);
 	}
 	if (Sett->mainFunction == "Content_sorting") {
-		content_sorting_routine(Sett);
+		ImageSort sorter(Sett);
+		sorter.content_sorting_routine();
 	}
 
 	SDL_Quit();
@@ -56,7 +78,7 @@ int main(int argc, char* argv[]) {
 void popup_routine(Settings* Sett) {
 	
 	ImageStorage IMGLib = ImageStorage(Sett->ImageFolderPath);
-	LOG(INFO, Sett->LoggingStrenght , "Getting Images from : "+ Sett->ImageFolderPath);
+	LOG(INFO , "Getting Images from : "+ Sett->ImageFolderPath);
 	
 	SDL_Window* window;
 	SDL_Renderer* renderer;

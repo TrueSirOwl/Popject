@@ -5,12 +5,13 @@ CXXFLAGS = $(BASE_CXXFLAGS) $(EXTRA_CXXFLAGS)
 
 PopSRC = Popject/main.cpp Popject/ImageStorage.cpp Popject/Popup.cpp Popject/Burster.cpp Popject/ImageSort.cpp
 SettSRC = SettingsGui/ImagesSettings.cpp SettingsGui/RangeSlider.cpp SettingsGui/AdvancedSettings.cpp SettingsGui/GeneralSettings.cpp SettingsGui/PopupSettings.cpp SettingsGui/SettGui.cpp SettingsGui/Main.cpp
-SharedSRC = shared/Debug.cpp shared/Settings.cpp shared/random.cpp
+SharedSRC = shared/Debug.cpp shared/Settings.cpp shared/random.cpp shared/Sqlite.cpp
 
 
 SDL_CXXFLAGS = #$(shell sdl3-config --cflags)
 SDL_LDFLAGS = #$(shell sdl3-config --libs)
 SDL_LIBS = -lXfixes -lX11 -lSDL3_image -lSDL3
+SQLLITE_LIBS = -lsqlite3
 
 FLTK_LIBS = -lfltk
 
@@ -28,10 +29,10 @@ strict:
 	$(MAKE) EXTRA_CXXFLAGS="$(STRICTFLAGS)" re
 
 popject: $(PopOBJ) $(SharedOBJ)
-	$(CXX) $(PopOBJ) $(SharedOBJ) $(SDL_LDFLAGS) $(SDL_LIBS) -o $(POPJECT)
+	$(CXX) $(PopOBJ) $(SharedOBJ) $(SDL_LDFLAGS) $(SDL_LIBS) $(SQLLITE_LIBS) -o $(POPJECT)
 
 settings: $(SettOBJ) $(SharedOBJ)
-	$(CXX) $(SettOBJ) $(SharedOBJ) -o $(SETTING) $(FLTK_LIBS)
+	$(CXX) $(SettOBJ) $(SharedOBJ) -o $(SETTING) $(FLTK_LIBS) $(SQLLITE_LIBS)
 
 Popject/%.g++.o: Popject/%.cpp 
 	$(CXX) $(CXXFLAGS) $(SDL_CXXFLAGS) -c $< -o $@ $(SDL_LIBS)
@@ -40,7 +41,7 @@ SettingsGui/%.g++.o: SettingsGui/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 shared/%.g++.o: shared/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SQLLITE_LIBS)
 
 clean:
 	-rm Popject/*.o

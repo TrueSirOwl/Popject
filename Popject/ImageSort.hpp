@@ -19,10 +19,39 @@ class ImageSort
 {
 private:
 	/* data */
-public:
-	ImageSort(/* args */);
-	~ImageSort();
-	void content_sorting_routine(Settings* Sett);
-};
+	Settings* Sett;
 
-void content_sorting_routine(Settings* Sett);
+	ImageStorage IMGLib;
+
+
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+
+	SDL_FRect target;
+	SDL_FRect Keep_Button;
+	SDL_FRect Delete_Button;
+	SDL_FRect Progrees_Bar;
+
+	std::unordered_set<std::string> seen;
+
+	std::string IMGPath;
+
+	SDL_Surface* imageSurface;
+	SDL_Texture* imageTexture;
+
+	int window_width;
+	int window_height;
+
+	int mousex;
+	int mousey;
+	bool running = true;
+
+	void getNewImage();
+
+	int IMGLib_size;
+
+public:
+	ImageSort(Settings* Sett);
+	~ImageSort();
+	void content_sorting_routine();
+};

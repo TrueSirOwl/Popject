@@ -13,6 +13,9 @@ std::string ImageStorage::getRandomImage() {
 	return (this->ImageLib[randomIndex]);
 }
 
+int ImageStorage::get_Lib_size() {
+	return (ImageLib.size());
+}
 
 ImageStorage::ImageStorage(std::string ImageFolderPath) {
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(ImageFolderPath)) {

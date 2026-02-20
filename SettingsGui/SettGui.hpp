@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include "Sqlite.hpp"
 
 class GeneralSettings;
 
@@ -26,9 +27,9 @@ private:
 	int SelectorButtonW;
 	int SelectorButtonH;
 
-	Fl_Window* Gui;
+	
 	Fl_Button* saveButton;
-
+	
 	PopupSettings* PopSett;
 	GeneralSettings* GenSett;
 	AdvancedSettings* AdvSett;
@@ -46,12 +47,14 @@ private:
 	static void ShowSettingWindow(Fl_Widget* w, void* name);
 	
 	public:
+	Fl_Window* Gui;
+	sqlite3* database;
 	std::string settingsFileLocation;
 	Settings* SettingsFileContent;
-	SettGui(std::string loc = "./shared/Settings.txt");
+	SettGui(sqlite3* database, std::string loc = "./shared/Settings.txt");
 	~SettGui();
 
-	void update(int CurrentlyOpenPageNum);
+	int update(int CurrentlyOpenPageNum);
 
 	void BuildMenueSelectorPanel(std::vector<const char*> &names);
 	int GetCurrentlyOpenPage();
@@ -98,6 +101,7 @@ private:
 	const char* getSettingsPath();
 	const char* getSelectedMainFunction();
 	const char* getMainFunction();
+	const char* getName();
 };
 
 void Close(Fl_Widget* win, void* Src);
