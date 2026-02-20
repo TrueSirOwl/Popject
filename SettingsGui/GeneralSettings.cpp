@@ -102,8 +102,12 @@ void GeneralSettings::LoadNewSettings(Fl_Widget* w, void* data) {
 	}
 	Gui->SettingsPath->value(Gui->mainGui->settingsFileLocation.c_str());
 	while (insert_new_setting_into_settings_table(Gui->mainGui->settingsFileLocation, Gui->mainGui->SettingsFileContent->Name, Gui->mainGui->database) == -2){
-		std::string n = "A Settings file with the name: " + Gui->mainGui->SettingsFileContent->Name + " already exists, please enter a new name";
-		Gui->mainGui->SettingsFileContent->Name = fl_input(n.c_str());
+		std::string string = "A Settings file with the name: " + Gui->mainGui->SettingsFileContent->Name + " already exists, please enter a new name";
+		const char* input = fl_input("%s","", string.c_str());
+		if (input == NULL) {
+			break;
+		}
+		Gui->mainGui->SettingsFileContent->Name = input;
 	}
 	Gui->known_settings_files = create_settings_list(Gui->mainGui->database);
 	Gui->KnownSettingsChoice->clear();
