@@ -9,6 +9,8 @@ SettGui::SettGui(sqlite3* _database, std::string loc) : W(std::min(900,Fl::w()))
 	Settings* temp = ReadSettings(settingsFileLocation);
 	if (temp != NULL) {
 		this->SettingsFileContent = temp;
+	} else {
+		this->SettingsFileContent = ReadSettings();
 	}
 	this->Gui = new Fl_Window(0,0, W, H, "Settings");
 	this->saveButton = new Fl_Button(0,H-20,W,20,"Save");
@@ -30,9 +32,9 @@ SettGui::SettGui(sqlite3* _database, std::string loc) : W(std::min(900,Fl::w()))
 
 
 int SettGui::update(int CurrentlyOpenPageNum) {
-	delete (this->SettingsFileContent);
 	Settings* temp = ReadSettings(settingsFileLocation);
 	if (temp != NULL) {
+		delete (this->SettingsFileContent);
 		this->SettingsFileContent = temp;
 	} else {
 		return (-1);
@@ -255,10 +257,6 @@ const char* SettGui::getSettingsPath() {
 	return(this->GenSett->SettingsPath->value());
 }
 
-const char* SettGui::getName() {
-	return(this->GenSett->Name_input->value());
-}
-
 const char* SettGui::getMainFunction() {
 	int c = 0;
 	while (c < this->GenSett->main_function_selector_pack->children()) {
@@ -297,7 +295,8 @@ void save(Fl_Widget* win, void* Src) {
 	SettGui* Gui = static_cast<SettGui*>(Src);
 	std::ofstream Settings(Gui->settingsFileLocation);
 	if (Settings.is_open() == false) {
-		std::cout << "error: could not open Settings File" << std::endl;
+		LOG(HERROR,"while saving: could not open Settings file: " + Gui->settingsFileLocation);
+		return;
 	}
 	Settings << "ButtonX=" << std::min(Gui->getButtonX(), Gui->getMaxXButtonHeight()) << std::endl;
 	Settings << "ButtonY=" << std::min(Gui->getButtonY(), Gui->getMaxYButtonHeight()) << std::endl;
@@ -327,9 +326,7 @@ void save(Fl_Widget* win, void* Src) {
 	Settings << "lowImageScale=" << Gui->gethighImageScale() << std::endl;
 	Settings << "highImageScale=" << Gui->getlowImageScale() << std::endl;
 	Settings << "Range_slider_value_shoving=" << Gui->getRange_slider_value_shoving() << std::endl;
-	Settings << "SettingsFilePath=" << Gui->getSettingsPath() << std::endl;
 	Settings << "mainFunction=" << Gui->getMainFunction() << std::endl;
-	Settings << "Name=" << Gui->getName() << std::endl;
 
 	Settings << "TrashbinPath=" << Gui->getTrashbinPath() << std::endl;
 	std::filesystem::path neww(Gui->getTrashbinPath());
@@ -340,18 +337,22 @@ void save(Fl_Widget* win, void* Src) {
 		fl_choice("Trash location changed", "ok",0,0);
 	}
 	Gui->update(Gui->GetCurrentlyOpenPage());
+	LOG(INFO, "saved to " + Gui->settingsFileLocation);
 	fl_message("saved succesfully");
 }
 
 SettGui::~SettGui()
 {
-	delete (this->PopSett);
+	delete (this->saveButton);
 	delete (this->GenSett);
+	delete (this->PopSett);
 	delete (this->AdvSett);
+	delete (this->ImgSett);
 	delete (this->SettingsFileContent);
 	while (this->SelectorPanelButtons.empty() == false) {
 		delete(this->SelectorPanelButtons[0]);
 		this->SelectorPanelButtons.erase(this->SelectorPanelButtons.begin());
 	}
 	this->SelectorPanelButtons.clear();
+	delete (this->Gui);
 }

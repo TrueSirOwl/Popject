@@ -32,6 +32,17 @@ int row_exists_callback(void* data, int argc, char** argv, char** colNames) {
 	return 0;
 }
 
+std::string get_name_of_setting(sqlite3* database, std::string location) {
+	char* err = NULL;
+	std::string name;
+	std::string sql = "SELECT NAME FROM SETTINGS_STORAGE WHERE LOCATION = '" + location + "'";
+	int ret = sqlite3_exec(database, sql.c_str(), get_settings_location_callback, &name, &err);
+	if (ret != SQLITE_OK) {
+		LOG(HERROR, err);
+		sqlite3_free(err);
+	}
+	return(name);
+}
 
 std::string Find_last_setting_location(sqlite3* database) {
 	char* err = NULL;
@@ -59,8 +70,8 @@ std::string Find_last_setting_location(sqlite3* database) {
 		return(Find_last_setting_location(database));
 	}
 	if (loc == "") {
-		LOG(HERROR, "table entry contained no location, removing table entry, and restoring last openend to stanard file");
-		remove_settings_entry(database);
+		LOG(HERROR, "table entry contained no location, removing table entry, and restoring last openend to standard file");
+		remove_last_opened_settings_entry(database);
 		make_standard_setting_last_opened(database);
 	}
 	return (loc);
@@ -79,10 +90,20 @@ void make_standard_setting_last_opened(sqlite3* database) {
 	}
 }
 
-void remove_settings_entry(sqlite3* database) {
+void remove_last_opened_settings_entry(sqlite3* database) {
 	const char *sql = "DELETE FROM FROM SETTINGS_STORAGE WHERE OPENED_LAST = 1";
 	char* err = NULL;
 	int ret = sqlite3_exec(database, sql, NULL, NULL, &err);
+	if (ret != SQLITE_OK) {
+		LOG(HERROR,  err);
+		sqlite3_free(err);
+	}
+}
+
+void remove_named_settings_entry(sqlite3* database, std::string name) {
+	std::string sql = "DELETE FROM SETTINGS_STORAGE WHERE NAME = '" + name + "'";
+	char* err = NULL;
+	int ret = sqlite3_exec(database, sql.c_str(), NULL, NULL, &err);
 	if (ret != SQLITE_OK) {
 		LOG(HERROR,  err);
 		sqlite3_free(err);
@@ -141,6 +162,16 @@ int insert_new_setting_into_settings_table(std::string location, std::string nam
 		return(-1);
 	}
 	return(0);
+}
+
+void change_settings_name(sqlite3* database, std::string oldname, std::string newname) {
+	std::string sql = "UPDATE SETTINGS_STORAGE SET NAME = '" + newname + "' WHERE NAME = '" + oldname + "'";
+	char* err = NULL;
+	int ret = sqlite3_exec(database, sql.c_str(), NULL, NULL, &err);
+	if (ret != SQLITE_OK) {
+		LOG(WARNING,  err);
+		sqlite3_free(err);
+	}
 }
 
 void change_last_opened_setting(sqlite3* database, std::string location) {

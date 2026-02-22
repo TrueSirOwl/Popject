@@ -23,8 +23,9 @@ private:
 	Settings* SettingsFileContent;
 
 	SettGui* mainGui;
-
-public:
+	public:
+	std::string settings_name;
+	std::string settings_location;
 
 	GeneralSettings(int x, int y, int w, int h, Settings* sett, SettGui* mainGui);
 	~GeneralSettings();
@@ -41,6 +42,7 @@ public:
 	Fl_Button* NewSettingsLoaderButton;
 	Fl_Choice* KnownSettingsChoice;
 	Fl_Button* KnownSettingsLoaderButton;
+	Fl_Button* KnownSettingsRemoverButton;
 
 	std::map<std::string, std::string> known_settings_files;
 
@@ -54,6 +56,7 @@ public:
 	static void SetSettingsPath(Fl_File_Chooser* chooser, void* data);
 	static void LoadNewSettings(Fl_Widget* w, void* data);
 	static void LoadKnownSettings(Fl_Widget* w, void* data);
-
+	static void change_settings_file_name(Fl_Widget* w, void* data);
+	static void RemoveKnownSettings(Fl_Widget* w, void* data);
 };
 

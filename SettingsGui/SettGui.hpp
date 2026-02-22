@@ -101,7 +101,6 @@ private:
 	const char* getSettingsPath();
 	const char* getSelectedMainFunction();
 	const char* getMainFunction();
-	const char* getName();
 };
 
 void Close(Fl_Widget* win, void* Src);

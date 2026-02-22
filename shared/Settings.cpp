@@ -29,7 +29,6 @@ Settings* ReadSettings(std::string loc) {
 		LOG(INFO,"Setting file at: " + loc + " opened!" );
 	}
 	const std::map<std::string, Setting> lineToEnumMap = {
-		{"Name", Setting::Name},
 		{"ButtonX", Setting::ButtonX},
 		{"ButtonY", Setting::ButtonY},
 		{"ButtonText", Setting::ButtonText},
@@ -59,7 +58,6 @@ Settings* ReadSettings(std::string loc) {
 		{"highImageScale",Setting::highImageScale},
 		{"lowImageScale", Setting::lowImageScale},
 		{"TrashbinPath", Setting::TrashbinPath},
-		{"SettingsFilePath", Setting::SettingsFilePath},
 		{"mainFunction", Setting::mainFunction},
 	};
 	long unsigned int settingsDone = 0;
@@ -93,6 +91,7 @@ Settings* ReadSettings(std::string loc) {
 			return(SettingsStruct);
 		}
 		setting.close();
+		delete (SettingsStruct);
 		return(NULL);
 	}
 	return(SettingsStruct);
@@ -113,10 +112,6 @@ Setting OwOWhatSettingDis(std::string line, const std::map<std::string, Setting>
 void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 	switch (sett)
 	{
-	case Setting::Name:
-		SettingsStruct->Name = line.substr(line.find('=') + 1, line.length());
-		break;
-
 	case Setting::ButtonX:
 		SettingsStruct->ButtonX = std::stoi(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -225,10 +220,6 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 		SettingsStruct->TrashbinPath = line.substr(line.find('=') + 1, line.length());
 		break;
 
-	case Setting::SettingsFilePath:
-		SettingsStruct->SettingsFilePath = line.substr(line.find('=') + 1, line.length());
-		break;
-
 	case Setting::lowMultipopTiming:
 		SettingsStruct->lowMultipopTiming = std::stod(line.substr(line.find('=') + 1, line.length()));
 		break;
@@ -246,7 +237,6 @@ void load_from_file(std::string line, Setting sett, Settings* SettingsStruct) {
 }
 
 void setStandardSettingsFile(Settings* sett) {
-	sett->Name = "default";
 	sett->lowMultipop = 1;
 	sett->highMultipop = 2;
 	sett->ButtonText = "test";
@@ -273,7 +263,6 @@ void setStandardSettingsFile(Settings* sett) {
 	sett->lowImageScale = 0.7;
 	sett->highImageScale = 1;
 	sett->TrashbinPath = "./Trash";
-	sett->SettingsFilePath = "./shared/Settings.txt";
 	sett->lowMultipopTiming = 0;
 	sett->highMultipopTiming = 300;
 	sett->mainFunction = "Popups";
